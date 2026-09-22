@@ -86,6 +86,6 @@ const styles = createStyle({
     width: 180,
     height: 180,
     borderWidth: BorderWidths.normal,
-    borderStyle: 'dashed',
+    borderRadius: 8,
   },
 })

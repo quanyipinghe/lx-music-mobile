@@ -36,19 +36,25 @@ const Volume = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <Text>{t('play_detail_setting_volume')}</Text>
-      <View style={styles.content}>
-        <Text style={styles.label} color={theme['c-font-label']}>{isSliding ? sliderSize : volume}</Text>
-        <Slider
-          minimumValue={0}
-          maximumValue={100}
-          onSlidingComplete={handleSlidingComplete}
-          onValueChange={handleValueChange}
-          onSlidingStart={handleSlidingStart}
-          step={1}
-          value={volume}
-        />
+    <View style={styles.settingRow}>
+      <Text style={styles.cardTitle}>{t('play_detail_setting_volume')}</Text>
+      <View style={styles.sliderRow}>
+        <View style={styles.sliderWrap}>
+          <Slider
+            minimumValue={0}
+            maximumValue={100}
+            onSlidingComplete={handleSlidingComplete}
+            onValueChange={handleValueChange}
+            onSlidingStart={handleSlidingStart}
+            step={1}
+            value={volume}
+          />
+        </View>
+        <View style={[styles.badge, { backgroundColor: theme['c-button-background'] }]}>
+          <Text style={[styles.badgeText, { color: theme['c-primary-font-active'] }]}>
+            {`${isSliding ? sliderSize : volume}%`}
+          </Text>
+        </View>
       </View>
     </View>
   )

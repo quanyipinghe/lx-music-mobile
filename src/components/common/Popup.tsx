@@ -12,38 +12,43 @@ import { useStatusbarHeight } from '@/store/common/hook'
 const styles = createStyle({
   centeredView: {
     flex: 1,
-    // justifyContent: 'flex-end',
-    // alignItems: 'center',
   },
   modalView: {
-    elevation: 6,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
     flexGrow: 0,
     flexShrink: 1,
+  },
+  handleBar: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    alignSelf: 'center',
+    marginTop: 8,
+    marginBottom: 4,
   },
   header: {
     flex: 0,
     flexDirection: 'row',
-    borderTopLeftRadius: Platform.OS == 'ios' ? 16 : 8,
-    borderTopRightRadius: Platform.OS == 'ios' ? 16 : 8,
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
   },
   title: {
-    paddingLeft: 10,
-    paddingRight: 25,
-    paddingTop: 10,
-    paddingBottom: 10,
-    // lineHeight: 20,
+    flex: 1,
+    fontWeight: '600',
   },
   closeBtn: {
-    position: 'absolute',
-    right: 0,
-    // borderTopRightRadius: 8,
-    flexGrow: 0,
-    flexShrink: 0,
-    height: Platform.OS == 'ios' ? 44 : 30,
-    width: Platform.OS == 'ios' ? 44 : 30,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: '#eee',
   },
 })
 
@@ -83,8 +88,8 @@ export default forwardRef<PopupType, PopupProps>(({
   }))
 
   const closeBtnComponent = useMemo(() => closeBtn
-    ? <TouchableOpacity style={styles.closeBtn} onPress={() => modalRef.current?.setVisible(false)} accessibilityRole="button" accessibilityLabel="关闭">
-        <Icon name="close" style={{ color: theme['c-font-label'] }} size={12} />
+    ? <TouchableOpacity style={[styles.closeBtn, { backgroundColor: theme['c-button-background'] }]} onPress={() => modalRef.current?.setVisible(false)} accessibilityRole="button" accessibilityLabel="关闭">
+        <Icon name="close" style={{ color: theme['c-font-label'] }} size={14} />
       </TouchableOpacity>
     : null, [closeBtn, theme])
 
@@ -104,7 +109,6 @@ export default forwardRef<PopupType, PopupProps>(({
             width: '100%',
             maxHeight: '78%',
             minHeight: '20%',
-            // backgroundColor: 'white',
           },
         ] as const
       case 'left':
@@ -123,7 +127,6 @@ export default forwardRef<PopupType, PopupProps>(({
             maxWidth: '78%',
             height: '100%',
             paddingTop: statusBarHeight,
-            // backgroundColor: 'white',
           },
         ] as const
       case 'right':
@@ -142,7 +145,6 @@ export default forwardRef<PopupType, PopupProps>(({
             maxWidth: '78%',
             height: '100%',
             paddingTop: statusBarHeight,
-            // backgroundColor: 'white',
           },
         ] as const
       case 'bottom':
@@ -158,22 +160,22 @@ export default forwardRef<PopupType, PopupProps>(({
           },
           {
             width: '100%',
-            maxHeight: '78%',
+            maxHeight: '82%',
             minHeight: '20%',
-            // backgroundColor: 'white',
-            borderTopLeftRadius: Platform.OS == 'ios' ? 16 : 8,
-            borderTopRightRadius: Platform.OS == 'ios' ? 16 : 8,
+            borderTopLeftRadius: 18,
+            borderTopRightRadius: 18,
           },
         ] as const
     }
   }, [position, statusBarHeight])
 
   return (
-    <Modal onHide={onHide} keyHide={keyHide} bgHide={bgHide} bgColor="rgba(50,50,50,.2)" ref={modalRef}>
+    <Modal onHide={onHide} keyHide={keyHide} bgHide={bgHide} bgColor="rgba(50,50,50,.35)" ref={modalRef}>
       <View style={{ ...styles.centeredView, ...centeredViewStyle, paddingBottom: keyboardShown ? keyboardHeight : 0 }}>
         <View style={{ ...styles.modalView, ...modalViewStyle, backgroundColor: theme['c-content-background'] }} onStartShouldSetResponder={() => true}>
+          {position === 'bottom' ? <View style={[styles.handleBar, { backgroundColor: theme['c-border-background'] ?? 'rgba(150, 150, 150, 0.3)' }]} /> : null}
           <View style={styles.header}>
-            <Text size={13} style={styles.title} numberOfLines={1}>{title}</Text>
+            <Text size={15} style={styles.title} numberOfLines={1}>{title}</Text>
             {closeBtnComponent}
           </View>
           {children}

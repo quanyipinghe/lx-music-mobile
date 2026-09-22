@@ -9,11 +9,11 @@ import { markTimeoutExitInteraction } from '@/core/player/timeoutExit'
 
 
 const DefaultBar = memo(() => {
-  // const theme = useTheme()
+  const theme = useTheme()
 
   return <View style={{
     ...styles.progressBar,
-    // backgroundColor: theme['c-primary-light-200-alpha-900'],
+    backgroundColor: theme['c-border-background'] ?? 'rgba(150, 150, 150, 0.25)',
     position: 'absolute',
     width: '100%',
     left: 0,
@@ -24,7 +24,7 @@ const DefaultBar = memo(() => {
 const BufferedBar = memo(({ progress }: { progress: number }) => {
   // console.log(bufferedProgress)
   const theme = useTheme()
-  return <View style={{ ...styles.progressBar, backgroundColor: theme['c-primary-light-600-alpha-900'], position: 'absolute', width: `${progress * 100}%`, left: 0, top: 0 }}></View>
+  return <View style={{ ...styles.progressBar, backgroundColor: theme['c-primary-light-600-alpha-900'] ?? 'rgba(150, 150, 150, 0.45)', position: 'absolute', width: `${progress * 100}%`, left: 0, top: 0 }}></View>
 })
 
 const PreassBar = memo(({ onDragState, setDragProgress, onSetProgress }: {
@@ -86,7 +86,7 @@ export const ProgressPlain = ({ progress, duration, buffered, paddingTop }: {
 
   return (
     <View style={{ ...styles.progress, paddingTop }}>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, position: 'relative', height: 2 }}>
         <DefaultBar />
         <BufferedBar progress={buffered} />
         <View style={{ ...styles.progressBar, backgroundColor: theme['c-primary-alpha-900'], width: progressStr, position: 'absolute', left: 0, top: 0 }} />
@@ -120,7 +120,7 @@ const Progress = ({ progress, duration, buffered, paddingTop }: {
 
   return (
     <View style={{ ...styles.progress, paddingTop }}>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, position: 'relative', height: 2 }}>
         <DefaultBar />
         <BufferedBar progress={buffered} />
         {
@@ -146,21 +146,20 @@ const Progress = ({ progress, duration, buffered, paddingTop }: {
 // const progressHeight = 3
 const styles = createStyle({
   progress: {
-    flex: 1,
-    // backgroundColor: 'rgba(0,0,0,0.2)',
+    width: '100%',
+    height: 2,
+    justifyContent: 'center',
     zIndex: 1,
   },
   progressBar: {
-    height: '100%',
-    borderRadius: 3,
+    height: 2,
+    borderRadius: 1,
   },
   pressBar: {
     position: 'absolute',
-    // backgroundColor: 'rgba(0,0,0,0.5)',
     left: 0,
-    top: 0,
-    // height: progressContentPadding * 2 + progressHeight,
-    height: '100%',
+    top: -7,
+    height: 16,
     width: '100%',
   },
 })

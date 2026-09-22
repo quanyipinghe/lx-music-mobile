@@ -16,9 +16,10 @@ const PrevBtn = ({ size }: { size: number }) => {
     markTimeoutExitInteraction()
     void playPrev()
   }
+  const btnSize = size * 0.85
   return (
-    <TouchableOpacity style={{ ...styles.cotrolBtn, width: size, height: size }} activeOpacity={0.5} onPress={handlePlayPrev}>
-      <Icon name='prevMusic' color={theme['c-button-font']} rawSize={size * 0.7} />
+    <TouchableOpacity style={{ ...styles.cotrolBtn, width: btnSize, height: btnSize }} activeOpacity={0.5} onPress={handlePlayPrev}>
+      <Icon name='prevMusic' color={theme['c-button-font']} rawSize={btnSize * 0.55} />
     </TouchableOpacity>
   )
 }
@@ -28,9 +29,10 @@ const NextBtn = ({ size }: { size: number }) => {
     markTimeoutExitInteraction()
     void playNext()
   }
+  const btnSize = size * 0.85
   return (
-    <TouchableOpacity style={{ ...styles.cotrolBtn, width: size, height: size }} activeOpacity={0.5} onPress={handlePlayNext}>
-      <Icon name='nextMusic' color={theme['c-button-font']} rawSize={size * 0.7} />
+    <TouchableOpacity style={{ ...styles.cotrolBtn, width: btnSize, height: btnSize }} activeOpacity={0.5} onPress={handlePlayNext}>
+      <Icon name='nextMusic' color={theme['c-button-font']} rawSize={btnSize * 0.55} />
     </TouchableOpacity>
   )
 }
@@ -38,12 +40,25 @@ const NextBtn = ({ size }: { size: number }) => {
 const TogglePlayBtn = ({ size }: { size: number }) => {
   const theme = useTheme()
   const isPlay = useIsPlay()
+  const btnSize = Math.max(size, 64)
   return (
-    <TouchableOpacity style={{ ...styles.cotrolBtn, width: size, height: size }} activeOpacity={0.5} onPress={() => {
-      markTimeoutExitInteraction()
-      togglePlay()
-    }}>
-      <Icon name={isPlay ? 'pause' : 'play'} color={theme['c-button-font']} rawSize={size * 0.7} />
+    <TouchableOpacity
+      style={[
+        styles.playBtn,
+        {
+          width: btnSize,
+          height: btnSize,
+          borderRadius: btnSize / 2,
+          backgroundColor: theme['c-button-background'] ?? 'rgba(0,0,0,0.06)',
+        },
+      ]}
+      activeOpacity={0.7}
+      onPress={() => {
+        markTimeoutExitInteraction()
+        togglePlay()
+      }}
+    >
+      <Icon name={isPlay ? 'pause' : 'play'} color={theme['c-button-font']} rawSize={btnSize * 0.46} />
     </TouchableOpacity>
   )
 }
@@ -79,14 +94,20 @@ const styles = createStyle({
     alignItems: 'center',
     flexGrow: 1,
     flexShrink: 1,
-    paddingHorizontal: '4%',
-    paddingVertical: 22,
-    // backgroundColor: 'rgba(0, 0, 0, .1)',
+    paddingHorizontal: '6%',
+    paddingVertical: 18,
   },
   cotrolBtn: {
     justifyContent: 'center',
     alignItems: 'center',
-
-    // backgroundColor: '#ccc',
+  },
+  playBtn: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 4,
   },
 })

@@ -25,11 +25,10 @@ const Title = () => {
   const theme = useTheme()
   const musicInfo = usePlayerMusicInfo()
 
-
   return (
     <View style={styles.titleContent}>
       <Text numberOfLines={1} style={styles.title}>{musicInfo.name}</Text>
-      <Text numberOfLines={1} style={styles.title} size={12} color={theme['c-font-label']}>{musicInfo.singer}</Text>
+      <Text numberOfLines={1} style={styles.subtitle} size={12} color={theme['c-font-label']}>{musicInfo.singer}</Text>
     </View>
   )
 }
@@ -38,7 +37,6 @@ export default memo(() => {
   const popupRef = useRef<SettingPopupType>(null)
   const soundEffectPopupRef = useRef<SoundEffectPopupType>(null)
   const statusBarHeight = useStatusbarHeight()
-  const theme = useTheme()
   const setting = useSetting()
 
   const back = () => {
@@ -55,11 +53,13 @@ export default memo(() => {
     <View style={{ height: HEADER_HEIGHT + statusBarHeight, paddingTop: statusBarHeight }} nativeID={NAV_SHEAR_NATIVE_IDS.playDetail_header}>
       <StatusBar />
       <View style={styles.container}>
-        <Btn icon="chevron-left" onPress={back} />
+        <Btn icon="chevron-down" size={20} onPress={back} />
         <Title />
-        <TimeoutExitBtn />
-        <Btn icon="slider" color={isSoundEffectActive(setting) ? theme['c-primary-font-active'] : undefined} onPress={showSoundEffect} />
-        <Btn icon="setting" size={16} onPress={showSetting} />
+        <View style={styles.actions}>
+          <TimeoutExitBtn />
+          <Btn icon="slider" size={17} active={isSoundEffectActive(setting)} onPress={showSoundEffect} />
+          <Btn icon="setting" size={17} onPress={showSetting} />
+        </View>
       </View>
       <SoundEffectPopup ref={soundEffectPopupRef} layoutMode="stacked" />
       <SettingPopup ref={popupRef} direction="vertical" />
@@ -71,21 +71,24 @@ export default memo(() => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    // justifyContent: 'center',
+    alignItems: 'center',
     height: '100%',
+    paddingHorizontal: 12,
   },
   titleContent: {
     flex: 1,
-    paddingHorizontal: 5,
-    // alignItems: 'center',
+    paddingHorizontal: 8,
     justifyContent: 'center',
   },
   title: {
-    // flex: 1,
-    // textAlign: 'center',
+    fontWeight: '600',
+    fontSize: 15,
   },
-  icon: {
-    paddingLeft: 4,
-    paddingRight: 4,
+  subtitle: {
+    marginTop: 1,
+  },
+  actions: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 })

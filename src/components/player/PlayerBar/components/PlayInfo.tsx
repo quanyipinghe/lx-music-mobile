@@ -43,20 +43,21 @@ export default ({ isHome }: { isHome: boolean }) => {
 
   return (
     <View style={stylesRaw.container}>
-      {/* <MusicName /> */}
-      <View style={styles.status}>
-        <Status autoUpdate={autoUpdate} />
+      <View style={stylesRaw.infoRow}>
+        <View style={styles.status}>
+          <Status autoUpdate={autoUpdate} />
+        </View>
+        <View style={{ flexGrow: 0, flexShrink: 0, flexDirection: 'row', alignItems: 'center' }}>
+          <PlayTimeCurrent timeStr={nowPlayTimeStr} />
+          <Text size={FONT_SIZE} color={theme['c-500']}> / </Text>
+          <PlayTimeMax timeStr={maxPlayTimeStr} />
+        </View>
       </View>
-      <View style={{ flexGrow: 0, flexShrink: 0, flexDirection: 'row', alignItems: 'flex-start' }} >
-        <PlayTimeCurrent timeStr={nowPlayTimeStr} />
-        <Text size={FONT_SIZE} color={theme['c-500']}> / </Text>
-        <PlayTimeMax timeStr={maxPlayTimeStr} />
-      </View>
-      <View style={[StyleSheet.absoluteFill, stylesRaw.progress]}>
+      <View style={stylesRaw.progressContainer}>
         {
           allowProgressBarSeek
-            ? <Progress progress={progress} duration={maxPlayTime} buffered={buffered} paddingTop={PADDING_TOP_PROGRESS} />
-            : <ProgressPlain progress={progress} duration={maxPlayTime} buffered={buffered} paddingTop={PADDING_TOP_PROGRESS} />
+            ? <Progress progress={progress} duration={maxPlayTime} buffered={buffered} />
+            : <ProgressPlain progress={progress} duration={maxPlayTime} buffered={buffered} />
         }
       </View>
     </View>
@@ -65,50 +66,31 @@ export default ({ isHome }: { isHome: boolean }) => {
 
 
 const styles = createStyle({
-  // container: {
-  //   // height: 16,
-  //   maxHeight: 32,
-  //   flexGrow: 1,
-  //   flexShrink: 0,
-  //   // flexDirection: 'column',
-  //   // justifyContent: 'center',
-  //   // alignItems: 'center',
-  //   // marginBottom: -1,
-  //   // backgroundColor: '#ccc',
-  //   // overflow: 'hidden',
-  //   // height:
-  //   // position: 'absolute',
-  //   // width: '100%',
-  //   // top: 0,
-  //   paddingTop: PADDING_TOP_RAW,
-  //   paddingHorizontal: 3,
-  //   flexDirection: 'row',
-  //   alignItems: 'center',
-  //   justifyContent: 'space-between',
-  // },
   status: {
     flexGrow: 1,
     flexShrink: 1,
-    paddingRight: 5,
-    // backgroundColor: '#ccc',
+    paddingRight: 6,
   },
 })
 
 const stylesRaw = StyleSheet.create({
   container: {
-    // height: 16,
-    maxHeight: scaleSizeH(32),
+    maxHeight: scaleSizeH(36),
     flexGrow: 1,
     flexShrink: 0,
-    paddingTop: PADDING_TOP,
     paddingHorizontal: scaleSizeW(3),
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  progress: {
-    // paddingVertical: 2,
-    marginBottom: MARGIN_TOP,
-    zIndex: 100,
+  progressContainer: {
+    marginTop: 3,
+    height: 2,
+    position: 'relative',
+    width: '100%',
   },
 })

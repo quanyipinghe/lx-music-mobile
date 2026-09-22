@@ -125,7 +125,6 @@ const styles = createStyle({
   line: {
     marginLeft: 30,
     borderBottomWidth: BorderWidths.normal2,
-    borderStyle: 'dashed',
     flex: 1,
   },
   button: {

@@ -106,7 +106,6 @@ const styles = createStyle({
     marginTop: GAP,
     paddingBottom: GAP,
     borderBottomWidth: BorderWidths.normal,
-    borderStyle: 'dashed',
   },
   comment: {
     flex: 1,
@@ -148,7 +147,6 @@ const styles = createStyle({
     marginLeft: 20,
     borderTopWidth: BorderWidths.normal,
     // backgroundColor: 'rgba(0,0,0,0.1)',
-    borderStyle: 'dashed',
   },
 })
 

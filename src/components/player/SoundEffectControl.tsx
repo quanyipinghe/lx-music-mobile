@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
-import { TouchableOpacity, View } from 'react-native'
+import { Platform, Switch, TouchableOpacity, View } from 'react-native'
 
 import { Icon } from '@/components/common/Icon'
 import Text from '@/components/common/Text'
@@ -48,7 +48,7 @@ const formatPercent = (value: number) => `${Math.round(value) * 10}%`
 const formatPlaybackRate = (value: number) => `${value.toFixed(2)}x`
 const formatPlain = (value: number) => `${Math.round(value)}`
 
-const PlaceholderCheckbox = memo(({
+const SceneChip = memo(({
   checked,
   label,
   onPress,
@@ -60,13 +60,25 @@ const PlaceholderCheckbox = memo(({
   const theme = useTheme()
 
   return (
-    <TouchableOpacity style={styles.placeholderCheckbox} activeOpacity={0.7} onPress={onPress}>
-      <Icon
-        name={checked ? 'checkbox-marked' : 'checkbox-blank-outline'}
-        size={15}
-        color={checked ? theme['c-primary-font-active'] : theme['c-font-label']}
-      />
-      <Text size={13}>{label}</Text>
+    <TouchableOpacity
+      style={[
+        styles.sceneChip,
+        {
+          backgroundColor: checked
+            ? (theme['c-primary-background-active'] ?? theme['c-primary'])
+            : theme['c-button-background'],
+        },
+      ]}
+      activeOpacity={0.7}
+      onPress={onPress}
+    >
+      <Text
+        size={12}
+        style={{ fontWeight: checked ? '600' : '400' }}
+        color={checked ? theme['c-primary-font-active'] : theme['c-button-font']}
+      >
+        {label}
+      </Text>
     </TouchableOpacity>
   )
 })
@@ -96,7 +108,7 @@ const PlaceholderSliderRow = memo(({
 
   return (
     <View style={styles.placeholderSliderItem}>
-      {label ? <Text size={13}>{label}</Text> : null}
+      {label ? <Text size={13} style={styles.sliderLabel}>{label}</Text> : null}
       <View style={styles.placeholderSliderContent}>
         <View style={styles.sliderWrap}>
           <Slider
@@ -108,7 +120,11 @@ const PlaceholderSliderRow = memo(({
             onSlidingComplete={onSlidingComplete}
           />
         </View>
-        <Text size={12} color={valueColor ?? theme['c-font-label']} style={styles.placeholderValue}>{formatter(value)}</Text>
+        <View style={[styles.valueBadge, { backgroundColor: theme['c-button-background'] }]}>
+          <Text size={12} color={valueColor ?? theme['c-primary-font-active']} style={styles.valueBadgeText}>
+            {formatter(value)}
+          </Text>
+        </View>
       </View>
     </View>
   )
@@ -130,12 +146,14 @@ const PresetAddButton = memo(({
         if (disabled) return
         onPress()
       }}
-      style={{
-        ...styles.presetAddButton,
-        borderColor: theme['c-primary-font-active'],
-        opacity: disabled ? 0.35 : 0.7,
-      }}>
-      <Text size={15} color={theme['c-primary-font-active']} style={styles.presetAddText}>+</Text>
+      style={[
+        styles.presetAddButton,
+        {
+          borderColor: theme['c-primary-font-active'],
+          opacity: disabled ? 0.35 : 0.8,
+        },
+      ]}>
+      <Text size={16} color={theme['c-primary-font-active']} style={styles.presetAddText}>+</Text>
     </TouchableOpacity>
   )
 })
@@ -181,13 +199,19 @@ const EqualizerSection = memo(({
     return result
   }, [])
 
+  const cardBg = theme['c-button-background'] ?? 'rgba(0,0,0,0.03)'
+
   return (
-    <View style={styles.section}>
+    <View style={[styles.section, { backgroundColor: cardBg }]}>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>{t('setting_play_sound_effect_equalizer')}</Text>
         <View style={styles.headerActions}>
-          <TouchableOpacity activeOpacity={0.7} onPress={onReset} style={{ ...styles.resetButton, backgroundColor: theme['c-button-background'] }}>
-            <Text size={12} color={theme['c-button-font']}>{t('setting_play_sound_effect_reset')}</Text>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={onReset}
+            style={[styles.resetButton, { backgroundColor: theme['c-primary-background-active'] ?? theme['c-button-background'] }]}
+          >
+            <Text size={12} style={{ fontWeight: '500' }} color={theme['c-primary-font-active']}>{t('setting_play_sound_effect_reset')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -208,7 +232,7 @@ const EqualizerSection = memo(({
                         paddingLeft: frequencyIndex == 1 ? 8 : 0,
                       }}>
                       <View style={styles.equalizerSliderRow}>
-                        <Text size={13} style={styles.equalizerLabel}>{frequency >= 1000 ? `${frequency / 1000}k` : `${frequency}`}</Text>
+                        <Text size={12} style={styles.equalizerLabel}>{frequency >= 1000 ? `${frequency / 1000}k` : `${frequency}`}</Text>
                         <View style={styles.sliderWrap}>
                           <Slider
                             minimumValue={minGain}
@@ -219,7 +243,7 @@ const EqualizerSection = memo(({
                             onSlidingComplete={value => { onSlidingComplete(frequency, Number(value)) }}
                           />
                         </View>
-                        <Text size={12} color={theme['c-font-label']} style={styles.equalizerValue}>{formatGain(previewGains[frequency])}</Text>
+                        <Text size={11} color={theme['c-font-label']} style={styles.equalizerValue}>{formatGain(previewGains[frequency])}</Text>
                       </View>
                     </View>
                   ))}
@@ -232,7 +256,7 @@ const EqualizerSection = memo(({
               {equalizerFrequencies.map(frequency => (
                 <View key={frequency} style={styles.stackedEqualizerItem}>
                   <View style={styles.equalizerSliderRow}>
-                    <Text size={13} style={styles.equalizerLabel}>{frequency >= 1000 ? `${frequency / 1000}k` : `${frequency}`}</Text>
+                    <Text size={12} style={styles.equalizerLabel}>{frequency >= 1000 ? `${frequency / 1000}k` : `${frequency}`}</Text>
                     <View style={styles.sliderWrap}>
                       <Slider
                         minimumValue={minGain}
@@ -243,7 +267,7 @@ const EqualizerSection = memo(({
                         onSlidingComplete={value => { onSlidingComplete(frequency, Number(value)) }}
                       />
                     </View>
-                    <Text size={12} color={theme['c-font-label']} style={styles.equalizerValue}>{formatGain(previewGains[frequency])}</Text>
+                    <Text size={11} color={theme['c-font-label']} style={styles.equalizerValue}>{formatGain(previewGains[frequency])}</Text>
                   </View>
                 </View>
               ))}
@@ -257,12 +281,14 @@ const EqualizerSection = memo(({
             <TouchableOpacity
               key={preset.id}
               activeOpacity={0.7}
-              style={{
-                ...styles.presetButton,
-                backgroundColor: isActive ? theme['c-button-background-selected'] : theme['c-button-background'],
-              }}
+              style={[
+                styles.presetButton,
+                {
+                  backgroundColor: isActive ? (theme['c-primary-background-active'] ?? theme['c-button-background-selected']) : theme['c-button-background'],
+                },
+              ]}
               onPress={() => { onPresetPress(preset.id) }}>
-              <Text size={13} color={isActive ? theme['c-button-font-selected'] : theme['c-button-font']}>
+              <Text size={12} style={{ fontWeight: isActive ? '600' : '400' }} color={isActive ? theme['c-primary-font-active'] : theme['c-button-font']}>
                 {t(preset.nameKey)}
               </Text>
             </TouchableOpacity>
@@ -274,13 +300,15 @@ const EqualizerSection = memo(({
             <TouchableOpacity
               key={preset.id}
               activeOpacity={0.7}
-              style={{
-                ...styles.presetButton,
-                backgroundColor: isActive ? theme['c-button-background-selected'] : theme['c-button-background'],
-              }}
+              style={[
+                styles.presetButton,
+                {
+                  backgroundColor: isActive ? (theme['c-primary-background-active'] ?? theme['c-button-background-selected']) : theme['c-button-background'],
+                },
+              ]}
               onPress={() => { onUserPresetPress(preset) }}
               onLongPress={() => { onUserPresetLongPress(preset) }}>
-              <Text size={13} color={isActive ? theme['c-button-font-selected'] : theme['c-button-font']}>
+              <Text size={12} style={{ fontWeight: isActive ? '600' : '400' }} color={isActive ? theme['c-primary-font-active'] : theme['c-button-font']}>
                 {preset.name}
               </Text>
             </TouchableOpacity>
@@ -322,15 +350,16 @@ const EnvironmentSection = memo(({
   const t = useI18n()
   const theme = useTheme()
   const disabledConvolution = !selectedSource
+  const cardBg = theme['c-button-background'] ?? 'rgba(0,0,0,0.03)'
 
   return (
-    <View style={styles.section}>
+    <View style={[styles.section, { backgroundColor: cardBg }]}>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>{t('setting_play_sound_effect_environment')}</Text>
       </View>
       <View style={styles.envList}>
         {soundEffectConvolutionOptions.map(item => (
-          <PlaceholderCheckbox
+          <SceneChip
             key={item.id}
             checked={selectedSource == item.source}
             label={t(item.labelKey)}
@@ -373,13 +402,15 @@ const EnvironmentSection = memo(({
             <TouchableOpacity
               key={preset.id}
               activeOpacity={0.7}
-              style={{
-                ...styles.presetButton,
-                backgroundColor: isActive ? theme['c-button-background-selected'] : theme['c-button-background'],
-              }}
+              style={[
+                styles.presetButton,
+                {
+                  backgroundColor: isActive ? (theme['c-primary-background-active'] ?? theme['c-button-background-selected']) : theme['c-button-background'],
+                },
+              ]}
               onPress={() => { onUserPresetPress(preset) }}
               onLongPress={() => { onUserPresetLongPress(preset) }}>
-              <Text size={13} color={isActive ? theme['c-button-font-selected'] : theme['c-button-font']}>
+              <Text size={12} style={{ fontWeight: isActive ? '600' : '400' }} color={isActive ? theme['c-primary-font-active'] : theme['c-button-font']}>
                 {preset.name}
               </Text>
             </TouchableOpacity>
@@ -404,9 +435,10 @@ const PitchSection = memo(({
 }) => {
   const t = useI18n()
   const theme = useTheme()
+  const cardBg = theme['c-button-background'] ?? 'rgba(0,0,0,0.03)'
 
   return (
-    <View style={styles.section}>
+    <View style={[styles.section, { backgroundColor: cardBg }]}>
       <View style={styles.sectionHeader}>
         <View style={styles.sectionHeaderTitle}>
           <Text style={styles.sectionTitle}>{t('setting_play_sound_effect_pitch')}</Text>
@@ -415,8 +447,12 @@ const PitchSection = memo(({
           </TouchableOpacity>
         </View>
         <View style={styles.headerActions}>
-          <TouchableOpacity activeOpacity={0.7} onPress={onReset} style={{ ...styles.resetButton, backgroundColor: theme['c-button-background'] }}>
-            <Text size={12} color={theme['c-button-font']}>{t('setting_play_sound_effect_reset')}</Text>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={onReset}
+            style={[styles.resetButton, { backgroundColor: theme['c-primary-background-active'] ?? theme['c-button-background'] }]}
+          >
+            <Text size={12} style={{ fontWeight: '500' }} color={theme['c-primary-font-active']}>{t('setting_play_sound_effect_reset')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -450,16 +486,24 @@ const SurroundSection = memo(({
 }) => {
   const t = useI18n()
   const theme = useTheme()
+  const cardBg = theme['c-button-background'] ?? 'rgba(0,0,0,0.03)'
 
   return (
-    <View style={styles.section}>
+    <View style={[styles.section, { backgroundColor: cardBg }]}>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>{t('setting_play_sound_effect_surround')}</Text>
-        <PlaceholderCheckbox
-          checked={enabled}
-          label={t('setting_play_sound_effect_surround_enable')}
-          onPress={onToggle}
-        />
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+          <Text size={12} color={theme['c-font-label']}>{t('setting_play_sound_effect_surround_enable')}</Text>
+          <Switch
+            value={enabled}
+            onValueChange={onToggle}
+            trackColor={{
+              false: theme['c-button-background'],
+              true: theme['c-primary'],
+            }}
+            thumbColor={Platform.OS === 'android' ? (enabled ? theme['c-theme'] : '#fff') : undefined}
+          />
+        </View>
       </View>
       <View>
         <PlaceholderSliderRow
@@ -837,10 +881,9 @@ export default memo(({ showTip = true, layoutMode = 'split' }: {
 
 const styles = createStyle({
   container: {
-    paddingTop: 5,
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingBottom: 15,
+    paddingTop: 4,
+    paddingHorizontal: 12,
+    paddingBottom: 24,
   },
   layout: {
     flexDirection: 'row',
@@ -858,24 +901,22 @@ const styles = createStyle({
   columnDivider: {
     width: 1,
     borderRightWidth: 1,
-    borderStyle: 'dashed',
-    borderRightColor: 'rgba(120, 180, 160, 0.5)',
     marginVertical: 2,
   },
   sectionBlock: {
     minWidth: 0,
   },
   sectionBlockWithDivider: {
-    borderTopWidth: 1,
-    borderStyle: 'dashed',
-    paddingTop: 14,
-    marginTop: 12,
+    minWidth: 0,
   },
   section: {
-    paddingBottom: 2,
+    padding: 12,
+    borderRadius: 12,
+    marginBottom: 10,
   },
   sectionTitle: {
     fontWeight: '600',
+    fontSize: 13,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -897,39 +938,52 @@ const styles = createStyle({
     padding: 2,
   },
   resetButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
   },
   envList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginBottom: 8,
   },
-  placeholderCheckbox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 10,
+  sceneChip: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+    marginRight: 6,
     marginBottom: 6,
-    gap: 3,
   },
   placeholderGroup: {
     gap: 8,
   },
   placeholderSliderItem: {
     gap: 2,
+    marginVertical: 2,
+  },
+  sliderLabel: {
+    marginBottom: 2,
   },
   placeholderSliderContent: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
   },
-  placeholderValue: {
-    width: 48,
-    textAlign: 'right',
+  valueBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+    minWidth: 46,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 6,
+  },
+  valueBadgeText: {
+    fontSize: 12,
   },
   tip: {
-    marginTop: 10,
+    marginTop: 8,
+    paddingHorizontal: 4,
   },
   equalizerGrid: {
     marginBottom: 10,
@@ -950,7 +1004,7 @@ const styles = createStyle({
     width: 24,
   },
   equalizerValue: {
-    width: 38,
+    width: 42,
     textAlign: 'right',
   },
   stackedEqualizerList: {
@@ -962,29 +1016,29 @@ const styles = createStyle({
   presetList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    marginTop: 4,
   },
   presetButton: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-    marginRight: 8,
-    marginBottom: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+    marginRight: 6,
+    marginBottom: 6,
   },
   presetAddButton: {
-    minWidth: 24,
+    minWidth: 28,
+    height: 28,
     paddingHorizontal: 8,
-    paddingVertical: 4,
-    marginRight: 8,
-    marginBottom: 8,
-    borderRadius: 4,
+    marginRight: 6,
+    marginBottom: 6,
+    borderRadius: 8,
     borderWidth: 1,
-    borderStyle: 'dashed',
     alignItems: 'center',
     justifyContent: 'center',
   },
   presetAddText: {
-    lineHeight: 15,
+    lineHeight: 16,
     fontWeight: '600',
   },
   sliderWrap: {

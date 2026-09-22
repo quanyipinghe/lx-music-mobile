@@ -67,6 +67,6 @@ const styles = createStyle({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: BorderWidths.normal,
-    borderStyle: 'dashed',
+    borderRadius: 6,
   },
 })

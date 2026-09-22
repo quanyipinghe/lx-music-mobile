@@ -2,9 +2,7 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { View, PanResponder } from 'react-native'
 import { createStyle } from '@/utils/tools'
 import { useTheme } from '@/store/theme/hook'
-import { scaleSizeW, scaleSizeH } from '@/utils/pixelRatio'
 import { useDrag } from '@/utils/hooks'
-import { Icon } from '@/components/common/Icon'
 import { markTimeoutExitInteraction } from '@/core/player/timeoutExit'
 // import { AppColors } from '@/theme'
 
@@ -63,6 +61,8 @@ const PreassBar = memo(({ onDragState, setDragProgress, onSetProgress }: {
 })
 
 
+const DOT_SIZE = 12
+
 const Progress = ({ progress, duration, buffered }: {
   progress: number
   duration: number
@@ -77,12 +77,20 @@ const Progress = ({ progress, duration, buffered }: {
 
   const progressDotStyle = useMemo(() => {
     return {
-      width: progressDotSize,
+      width: DOT_SIZE,
+      height: DOT_SIZE,
+      borderRadius: DOT_SIZE / 2,
+      backgroundColor: theme['c-primary'] ?? '#fff',
       position: 'absolute',
-      right: -progressDotSize / 2,
-      top: -(progressDotSize - progressHeightSize) / 2,
+      right: -DOT_SIZE / 2,
+      top: -(DOT_SIZE - progressHeight) / 2,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3,
+      elevation: 3,
     } as const
-  }, [])
+  }, [theme])
 
   const durationRef = useRef(duration)
   useEffect(() => {
@@ -103,13 +111,13 @@ const Progress = ({ progress, duration, buffered }: {
             ? (
                 <>
                   <View style={{ ...styles.progressBar, backgroundColor: theme['c-primary-light-100-alpha-700'], width: progressStr, position: 'absolute', left: 0, top: 0 }} />
-                  <View style={{ ...styles.progressBar, backgroundColor: theme['c-primary-light-100-alpha-600'], width: `${dragProgress * 100}%`, position: 'absolute', left: 0, top: 0 }}>
-                    <Icon name="full_stop" color={theme['c-primary-light-100']} rawSize={progressDotSize} style={progressDotStyle} />
+                  <View style={{ ...styles.progressBar, backgroundColor: theme['c-primary'], width: `${dragProgress * 100}%`, position: 'absolute', left: 0, top: 0 }}>
+                    <View style={progressDotStyle} />
                   </View>
                 </>
               ) : (
-                <View style={{ ...styles.progressBar, backgroundColor: theme['c-primary-light-100-alpha-400'], width: progressStr, position: 'absolute', left: 0, top: 0 }}>
-                  <Icon name="full_stop" color={theme['c-primary-light-100']} rawSize={progressDotSize} style={progressDotStyle} />
+                <View style={{ ...styles.progressBar, backgroundColor: theme['c-primary'], width: progressStr, position: 'absolute', left: 0, top: 0 }}>
+                  <View style={progressDotStyle} />
                 </View>
               )
         }
@@ -123,10 +131,8 @@ const Progress = ({ progress, duration, buffered }: {
 
 
 const progressContentPadding = 10
-const progressHeight = 3.6
+const progressHeight = 3.5
 const progressContentHeight = progressContentPadding * 2 + progressHeight
-const progressHeightSize = scaleSizeH(progressHeight)
-let progressDotSize = scaleSizeW(progressContentHeight * 0.8)
 const styles = createStyle({
   progress: {
     width: '100%',
@@ -138,7 +144,7 @@ const styles = createStyle({
   },
   progressBar: {
     height: progressHeight,
-    borderRadius: 4,
+    borderRadius: 2,
   },
   pressBar: {
     position: 'absolute',

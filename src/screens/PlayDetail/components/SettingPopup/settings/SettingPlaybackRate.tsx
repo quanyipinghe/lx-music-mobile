@@ -1,6 +1,5 @@
 import { useState } from 'react'
-
-import { View } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
 import { useTheme } from '@/store/theme/hook'
 import Text from '@/components/common/Text'
 import { useSettingValue } from '@/store/setting/hook'
@@ -10,7 +9,6 @@ import { useI18n } from '@/lang'
 import styles from './style'
 import { setPlaybackRate, updateMetaData } from '@/plugins/player'
 import { setPlaybackRate as setLyricPlaybackRate } from '@/core/lyric'
-import ButtonPrimary from '@/components/common/ButtonPrimary'
 import playerState from '@/store/player/state'
 import settingState from '@/store/setting/state'
 import { markTimeoutExitInteraction } from '@/core/player/timeoutExit'
@@ -54,22 +52,42 @@ export default () => {
     updateSetting({ 'player.playbackRate': 1 })
   }
 
+  const isCustomRate = playbackRate !== 100
+
   return (
-    <View style={styles.container}>
-      <Text>{t('play_detail_setting_playback_rate')}</Text>
-      <View style={styles.content}>
-        <Text style={styles.label} color={theme['c-font-label']}>{`${((isSliding ? sliderSize : playbackRate) / 100).toFixed(2)}x`}</Text>
-        <Slider
-          minimumValue={MIN_VALUE}
-          maximumValue={MAX_VALUE}
-          onSlidingComplete={handleSlidingComplete}
-          onValueChange={handleValueChange}
-          onSlidingStart={handleSlidingStart}
-          step={1}
-          value={playbackRate}
-        />
+    <View style={styles.settingRow}>
+      <View style={styles.headerWithAction}>
+        <Text style={styles.cardTitle}>{t('play_detail_setting_playback_rate')}</Text>
+        {isCustomRate ? (
+          <TouchableOpacity
+            style={[styles.miniActionBtn, { backgroundColor: theme['c-primary-background-active'] }]}
+            activeOpacity={0.7}
+            onPress={handleReset}
+          >
+            <Text style={[styles.miniActionBtnText, { color: theme['c-primary-font-active'] }]}>
+              {t('play_detail_setting_playback_rate_reset')}
+            </Text>
+          </TouchableOpacity>
+        ) : null}
       </View>
-      <ButtonPrimary onPress={handleReset}>{t('play_detail_setting_playback_rate_reset')}</ButtonPrimary>
+      <View style={styles.sliderRow}>
+        <View style={styles.sliderWrap}>
+          <Slider
+            minimumValue={MIN_VALUE}
+            maximumValue={MAX_VALUE}
+            onSlidingComplete={handleSlidingComplete}
+            onValueChange={handleValueChange}
+            onSlidingStart={handleSlidingStart}
+            step={1}
+            value={playbackRate}
+          />
+        </View>
+        <View style={[styles.badge, { backgroundColor: theme['c-button-background'] }]}>
+          <Text style={[styles.badgeText, { color: theme['c-primary-font-active'] }]}>
+            {`${((isSliding ? sliderSize : playbackRate) / 100).toFixed(2)}x`}
+          </Text>
+        </View>
+      </View>
     </View>
   )
 }
