@@ -1,5 +1,5 @@
 import { forwardRef, memo, useEffect, useImperativeHandle, useState } from 'react'
-import { View } from 'react-native'
+import { Platform, View } from 'react-native'
 import { BorderWidths } from '@/theme'
 import ButtonBar from './ActionBar'
 import { useNavigationComponentDidAppear } from '@/navigation'
@@ -49,7 +49,7 @@ const Pic = ({ componentId, playCount, imgUrl }: {
 
   return (
     <View style={{ ...styles.listItemImg, width: IMAGE_WIDTH, height: IMAGE_WIDTH }}>
-      <Image nativeID={`${NAV_SHEAR_NATIVE_IDS.songlistDetail_pic}_to_${info.id}`} url={pic} style={{ flex: 1, borderRadius: 4 }} />
+      <Image nativeID={`${NAV_SHEAR_NATIVE_IDS.songlistDetail_pic}_to_${info.id}`} url={pic} style={{ flex: 1, borderRadius: Platform.OS == 'ios' ? 14 : 4 }} />
       {
         playCount && animated ? <CountText count={playCount} /> : null
       }

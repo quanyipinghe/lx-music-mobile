@@ -1,4 +1,4 @@
-import { View } from 'react-native'
+import { Platform, View } from 'react-native'
 
 import { createStyle } from '@/utils/tools'
 import { useTheme } from '@/store/theme/hook'
@@ -14,7 +14,7 @@ export default ({ title, children }: Props) => {
   const theme = useTheme()
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, Platform.OS == 'ios' && { backgroundColor: theme['c-button-background'] }]}>
       <Text style={{ ...styles.title, borderLeftColor: theme['c-primary'] }} size={16} >{title}</Text>
       <View>
         {children}
@@ -26,8 +26,7 @@ export default ({ title, children }: Props) => {
 
 const styles = createStyle({
   container: {
-    // paddingLeft: 10,
-    // backgroundColor: 'rgba(0,0,0,0.2)',
+    ...(Platform.OS == 'ios' ? { padding: 16, marginHorizontal: 12, marginVertical: 8, borderRadius: 14, overflow: 'hidden' as const } : null),
   },
   title: {
     borderLeftWidth: 5,

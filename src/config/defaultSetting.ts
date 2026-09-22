@@ -1,3 +1,5 @@
+import { Platform } from 'react-native'
+
 const defaultSetting: LX.AppSetting = {
   version: '2.0',
   'common.isAutoTheme': false,
@@ -103,7 +105,10 @@ const defaultSetting: LX.AppSetting = {
 
 
 // 使用新年皮肤
-if (new Date().getMonth() < 2) {
+if (Platform.OS == 'ios') {
+  defaultSetting['theme.id'] = 'modern_dark'
+  defaultSetting['theme.darkId'] = 'modern_dark'
+} else if (new Date().getMonth() < 2) {
   defaultSetting['theme.id'] = 'happy_new_year'
   defaultSetting['desktopLyric.style.lyricPlayedColor'] = 'rgba(255, 18, 34, 1)'
 }

@@ -29,7 +29,7 @@ const HeaderItem = ({ id, label, isActive, onPress }: {
   const theme = useTheme()
   // console.log(theme)
   const components = useMemo(() => (
-    <TouchableOpacity style={styles.tabBtn} onPress={() => { !isActive && onPress(id) }}>
+    <TouchableOpacity style={styles.tabBtn} onPress={() => { !isActive && onPress(id) }} accessibilityRole="tab" accessibilityState={{ selected: isActive }} accessibilityLabel={label}>
       <Text color={isActive ? theme['c-primary-font-active'] : theme['c-font']}>{label}</Text>
     </TouchableOpacity>
   ), [isActive, theme, label, onPress, id])

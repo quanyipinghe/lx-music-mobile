@@ -1,5 +1,5 @@
 import { useRef, useImperativeHandle, forwardRef, useCallback } from 'react'
-import { TextInput, View, TouchableOpacity, StyleSheet, type TextInputProps } from 'react-native'
+import { Platform, TextInput, View, TouchableOpacity, StyleSheet, type TextInputProps } from 'react-native'
 import { Icon } from '@/components/common/Icon'
 import { createStyle } from '@/utils/tools'
 import { useTheme } from '@/store/theme/hook'
@@ -18,11 +18,11 @@ const styles = createStyle({
   input: {
     // backgroundColor: 'rgba(0,0,0,0.1)',
     // backgroundColor: 'white',
-    borderRadius: 2,
+    borderRadius: Platform.OS == 'ios' ? 12 : 2,
     paddingTop: 0,
     paddingBottom: 0,
-    height: 32,
-    paddingLeft: 5,
+    height: Platform.OS == 'ios' ? 44 : 32,
+    paddingLeft: Platform.OS == 'ios' ? 12 : 5,
     paddingRight: 0,
     flexGrow: 1,
     flexShrink: 1,
@@ -115,7 +115,7 @@ export default forwardRef<InputType, InputProps>(({ onChangeText, onClearText, c
         autoCapitalize="none"
         onChangeText={changeText}
         autoComplete="off"
-        style={StyleSheet.compose({ ...styles.input, color: theme['c-font'], fontSize: setSpText(size) }, style)}
+        style={StyleSheet.compose({ ...styles.input, color: theme['c-font'], backgroundColor: Platform.OS == 'ios' ? theme['c-primary-input-background'] : undefined, fontSize: setSpText(size) }, style)}
         placeholderTextColor={theme['c-primary-dark-100-alpha-600']}
         selectionColor={theme['c-primary-light-100-alpha-300']}
         ref={inputRef} {...props} />
@@ -123,7 +123,7 @@ export default forwardRef<InputType, InputProps>(({ onChangeText, onClearText, c
       <Animated.View style={{ ...styles.clearBtnContent, transform: [{ scale: scaleClearBtn }] }}> */}
         {clearBtn
           ? <View style={styles.clearBtnContent}>
-              <TouchableOpacity style={styles.clearBtn} onPress={clearText}>
+              <TouchableOpacity style={styles.clearBtn} onPress={clearText} accessibilityRole="button" accessibilityLabel="清空">
                 <Icon name="remove" color={theme['c-primary-dark-100-alpha-500']} size={11} />
               </TouchableOpacity>
             </View>
@@ -134,4 +134,3 @@ export default forwardRef<InputType, InputProps>(({ onChangeText, onClearText, c
     </View>
   )
 })
-

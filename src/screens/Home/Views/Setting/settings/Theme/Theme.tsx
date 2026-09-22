@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { View, TouchableOpacity, type ImageSourcePropType } from 'react-native'
+import { Platform, View, TouchableOpacity, type ImageSourcePropType } from 'react-native'
 import { setTheme } from '@/core/theme'
 import { useI18n } from '@/lang'
 import { useSettingValue } from '@/store/setting/hook'
@@ -32,7 +32,7 @@ const ThemeItem = ({ id, name, color, image, setTheme, showAll }: {
 
   return (
     showAll || isActive ? (
-      <TouchableOpacity style={{ ...styles.item, width: scaleSizeH(ITEM_HEIGHT) }} activeOpacity={0.5} onPress={() => { setTheme(id) }}>
+      <TouchableOpacity style={{ ...styles.item, width: scaleSizeH(ITEM_HEIGHT) }} activeOpacity={0.5} onPress={() => { setTheme(id) }} accessibilityRole="radio" accessibilityLabel={name} accessibilityState={{ selected: isActive }}>
         <View style={{ ...styles.colorContent, width: scaleSizeH(COLOR_ITEM_HEIGHT), borderColor: isActive ? color : 'transparent' }}>
           {
             image
@@ -91,7 +91,7 @@ export default memo(() => {
     <SubTitle title={t('setting_basic_theme')}>
       <View style={styles.list}>
         {
-          themeInfo.themes.map(({ id, config }) => {
+          themeInfo.themes.filter(({ id }) => Platform.OS == 'ios' || id != 'modern_dark').map(({ id, config }) => {
             return <ThemeItem
               key={id}
               color={config.themeColors['c-theme']}

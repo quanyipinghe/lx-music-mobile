@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { Platform } from 'react-native'
 import { useHorizontalMode } from '@/utils/hooks'
 import PageContent from '@/components/PageContent'
 import { setComponentId } from '@/core/common'
@@ -7,6 +8,7 @@ import Vertical from './Vertical'
 import Horizontal from './Horizontal'
 import { navigations } from '@/navigation'
 import settingState from '@/store/setting/state'
+import IOSHome from './IOSHome'
 
 
 interface Props {
@@ -29,9 +31,11 @@ export default ({ componentId }: Props) => {
   return (
     <PageContent>
       {
-        isHorizontalMode
-          ? <Horizontal />
-          : <Vertical />
+        Platform.OS == 'ios'
+          ? <IOSHome />
+          : isHorizontalMode
+            ? <Horizontal />
+            : <Vertical />
       }
     </PageContent>
   )

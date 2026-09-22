@@ -1,6 +1,6 @@
 import { useTheme } from '@/store/theme/hook'
 import { useMemo, useRef, useImperativeHandle, forwardRef } from 'react'
-import { Pressable, type PressableProps, StyleSheet, type View, type ViewProps } from 'react-native'
+import { Platform, Pressable, type PressableProps, StyleSheet, type View, type ViewProps } from 'react-native'
 // import { AppColors } from '@/theme'
 
 
@@ -35,7 +35,7 @@ export default forwardRef<BtnType, BtnProps>(({ ripple: propsRipple = {}, disabl
     <Pressable
       android_ripple={ripple}
       disabled={disabled}
-      style={StyleSheet.compose({ opacity: disabled ? 0.3 : 1 }, style)}
+      style={StyleSheet.compose({ opacity: disabled ? 0.3 : 1, minHeight: Platform.OS == 'ios' ? 44 : undefined, minWidth: Platform.OS == 'ios' ? 44 : undefined }, style)}
       {...props}
       ref={btnRef}
     >
@@ -43,4 +43,3 @@ export default forwardRef<BtnType, BtnProps>(({ ripple: propsRipple = {}, disabl
     </Pressable>
   )
 })
-

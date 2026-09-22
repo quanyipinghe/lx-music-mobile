@@ -68,6 +68,19 @@ export const buildActiveThemeColors = (theme: LX.Theme): LX.ActiveTheme => {
     theme.config.extInfo[k] = theme.config.themeColors[v.replace(varColorRxp, '$1') as ColorsKey]
   }
 
+  const modernColors = theme.id == 'modern_dark'
+    ? {
+        'c-content-background': '#080a09',
+        'c-border-background': '#2a2e2b',
+        'c-button-background': '#202421',
+        'c-button-background-selected': '#1ed760',
+        'c-primary-background': '#1c3324',
+        'c-primary-background-hover': '#24452f',
+        'c-primary-background-active': '#2b5739',
+        'c-primary-input-background': '#202421',
+      }
+    : null
+
   return {
     id: theme.id,
     name: theme.name,
@@ -93,6 +106,7 @@ export const buildActiveThemeColors = (theme: LX.Theme): LX.ActiveTheme => {
     'c-content-background': theme.config.themeColors['c-primary-light-1000'],
     'c-border-background': theme.config.themeColors['c-primary-light-100-alpha-700'],
     'bg-image': bgImg,
+    ...modernColors,
   } as const
 }
 

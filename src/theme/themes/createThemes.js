@@ -204,6 +204,24 @@ const defaultThemes = [
     },
   },
   {
+    id: 'modern_dark',
+    name: 'LX 现代深色',
+    isDark: true,
+    config: {
+      primary: 'rgb(30, 215, 96)',
+      font: 'rgb(245, 247, 246)',
+      'c-app-background': 'rgb(8, 10, 9)',
+      'c-main-background': 'rgba(10, 12, 11, 0.97)',
+      'bg-image': '',
+      'bg-image-position': 'center',
+      'bg-image-size': 'cover',
+
+      'c-badge-primary': 'var(c-primary)',
+      'c-badge-secondary': '#55a7ff',
+      'c-badge-tertiary': '#f4b942',
+    },
+  },
+  {
     id: 'black',
     name: '黑灯瞎火',
     isDark: true,
@@ -309,4 +327,3 @@ const themes = defaultThemes.map(({ config: { primary, font, ...extInfo }, ...th
 })
 
 fs.writeFileSync(path.join(__dirname, 'themes.ts'), `/* eslint-disable */\n//! 此文件由 createThemes.js 生成\n\nexport default ${JSON.stringify(themes, null, 2)} as const`)
-

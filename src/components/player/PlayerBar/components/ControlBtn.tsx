@@ -21,7 +21,7 @@ const PlayPrevBtn = () => {
   const theme = useTheme()
 
   return (
-    <TouchableOpacity style={styles.cotrolBtn} activeOpacity={0.5} onPress={handlePlayPrev}>
+    <TouchableOpacity style={styles.cotrolBtn} activeOpacity={0.5} onPress={handlePlayPrev} accessibilityRole="button" accessibilityLabel={global.i18n.t('play_prev')}>
       <Icon name='prevMusic' color={theme['c-button-font']} size={BTN_SIZE} />
     </TouchableOpacity>
   )
@@ -31,7 +31,7 @@ const PlayNextBtn = () => {
   const theme = useTheme()
 
   return (
-    <TouchableOpacity style={styles.cotrolBtn} activeOpacity={0.5} onPress={handlePlayNext}>
+    <TouchableOpacity style={styles.cotrolBtn} activeOpacity={0.5} onPress={handlePlayNext} accessibilityRole="button" accessibilityLabel={global.i18n.t('play_next')}>
       <Icon name='nextMusic' color={theme['c-button-font']} size={BTN_SIZE} />
     </TouchableOpacity>
   )
@@ -42,7 +42,7 @@ const TogglePlayBtn = () => {
   const theme = useTheme()
 
   return (
-    <TouchableOpacity style={styles.cotrolBtn} activeOpacity={0.5} onPress={() => {
+    <TouchableOpacity style={styles.cotrolBtn} activeOpacity={0.5} accessibilityRole="button" accessibilityLabel={global.i18n.t(isPlay ? 'pause' : 'play')} accessibilityState={{ selected: isPlay }} onPress={() => {
       markTimeoutExitInteraction()
       togglePlay()
     }}>

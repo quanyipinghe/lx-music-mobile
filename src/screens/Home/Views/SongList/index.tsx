@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { Platform, View } from 'react-native'
 import settingState from '@/store/setting/state'
 import Content from './Content'
 import TagList from './TagList'
@@ -7,12 +8,16 @@ import DrawerLayoutFixed, { type DrawerLayoutFixedType } from '@/components/comm
 import { COMPONENT_IDS } from '@/config/constant'
 import { scaleSizeW } from '@/utils/pixelRatio'
 import type { InitState as CommonState } from '@/store/common/state'
+import { useWindowSize } from '@/utils/hooks'
+import { createStyle } from '@/utils/tools'
 
 const MAX_WIDTH = scaleSizeW(560)
 
 export default () => {
   const drawer = useRef<DrawerLayoutFixedType>(null)
   const theme = useTheme()
+  const { width, height } = useWindowSize()
+  const showSidebar = Platform.OS == 'ios' && (width >= 700 || width > height)
 
   useEffect(() => {
     const handleFixDrawer = (id: CommonState['navActiveId']) => {
@@ -41,6 +46,15 @@ export default () => {
   const navigationView = () => <TagList />
   // console.log('render drawer content')
 
+  if (showSidebar) {
+    return (
+      <View style={styles.wideContainer}>
+        <View style={[styles.sidebar, { borderRightColor: theme['c-border-background'] }]}><TagList alwaysVisible /></View>
+        <Content />
+      </View>
+    )
+  }
+
   return (
     <DrawerLayoutFixed
       ref={drawer}
@@ -56,3 +70,8 @@ export default () => {
     </DrawerLayoutFixed>
   )
 }
+
+const styles = createStyle({
+  wideContainer: { flex: 1, flexDirection: 'row' },
+  sidebar: { width: 280, borderRightWidth: 1, overflow: 'hidden' },
+})

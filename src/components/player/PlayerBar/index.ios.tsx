@@ -1,0 +1,35 @@
+import { memo, useMemo } from 'react'
+import { View } from 'react-native'
+import { useKeyboard } from '@/utils/hooks'
+import Pic from './components/Pic'
+import Title from './components/Title'
+import PlayInfo from './components/PlayInfo'
+import ControlBtn from './components/ControlBtn'
+import { useTheme } from '@/store/theme/hook'
+import { useSettingValue } from '@/store/setting/hook'
+import { IOS_UI } from '@/theme/ios'
+import { createStyle } from '@/utils/tools'
+
+export default memo(({ isHome = false }: { isHome?: boolean }) => {
+  const { keyboardShown } = useKeyboard()
+  const theme = useTheme()
+  const autoHidePlayBar = useSettingValue('common.autoHidePlayBar')
+  const player = useMemo(() => (
+    <View style={[styles.container, { backgroundColor: theme['c-button-background'] }]} accessibilityLabel="迷你播放器">
+      <Pic isHome={isHome} />
+      <View style={styles.center}>
+        <Title isHome={isHome} />
+        <PlayInfo isHome={isHome} />
+      </View>
+      <View style={styles.controls}><ControlBtn /></View>
+    </View>
+  ), [isHome, theme])
+
+  return autoHidePlayBar && keyboardShown ? null : player
+})
+
+const styles = createStyle({
+  container: { height: IOS_UI.playerHeight, paddingHorizontal: 8, flexDirection: 'row', alignItems: 'center' },
+  center: { flex: 1, minWidth: 0, paddingLeft: 10 },
+  controls: { flexDirection: 'row', alignItems: 'center' },
+})

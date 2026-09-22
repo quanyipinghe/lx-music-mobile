@@ -1,5 +1,5 @@
 import { useImperativeHandle, forwardRef, useMemo, useRef } from 'react'
-import { View, TouchableHighlight } from 'react-native'
+import { Platform, View, TouchableHighlight } from 'react-native'
 
 import Modal, { type ModalType } from './Modal'
 import { Icon } from '@/components/common/Icon'
@@ -21,7 +21,8 @@ const styles = createStyle({
     minWidth: '60%',
     maxHeight: '78%',
     // backgroundColor: 'white',
-    borderRadius: 4,
+    borderRadius: Platform.OS == 'ios' ? 16 : 4,
+    overflow: 'hidden',
     // shadowColor: '#000',
     // shadowOffset: {
     //   width: 0,
@@ -35,14 +36,14 @@ const styles = createStyle({
     flexGrow: 0,
     flexShrink: 0,
     flexDirection: 'row',
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
-    height: HEADER_HEIGHT,
+    borderTopLeftRadius: Platform.OS == 'ios' ? 16 : 4,
+    borderTopRightRadius: Platform.OS == 'ios' ? 16 : 4,
+    height: Platform.OS == 'ios' ? 44 : HEADER_HEIGHT,
   },
   title: {
     paddingLeft: 5,
     paddingRight: 25,
-    lineHeight: HEADER_HEIGHT,
+    lineHeight: Platform.OS == 'ios' ? 44 : HEADER_HEIGHT,
   },
   closeBtn: {
     position: 'absolute',
@@ -50,7 +51,7 @@ const styles = createStyle({
     borderTopRightRadius: 4,
     flexGrow: 0,
     flexShrink: 0,
-    height: HEADER_HEIGHT,
+    height: Platform.OS == 'ios' ? 44 : HEADER_HEIGHT,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -91,7 +92,7 @@ export default forwardRef<DialogType, DialogProps>(({
 
   const closeBtnComponent = useMemo(() => {
     return closeBtn
-      ? <TouchableHighlight style={{ ...styles.closeBtn, width: scaleSizeH(HEADER_HEIGHT) }} underlayColor={theme['c-primary-dark-200-alpha-600']} onPress={() => modalRef.current?.setVisible(false)}>
+      ? <TouchableHighlight style={{ ...styles.closeBtn, width: scaleSizeH(Platform.OS == 'ios' ? 44 : HEADER_HEIGHT) }} underlayColor={theme['c-primary-dark-200-alpha-600']} onPress={() => modalRef.current?.setVisible(false)} accessibilityRole="button" accessibilityLabel="关闭">
           <Icon name="close" color={theme['c-primary-dark-500-alpha-500']} size={10} />
         </TouchableHighlight>
       : null

@@ -1,5 +1,5 @@
 import { useImperativeHandle, forwardRef, useMemo, useRef, useState, type Ref } from 'react'
-import { View, Animated, TouchableHighlight } from 'react-native'
+import { Platform, View, Animated, TouchableHighlight } from 'react-native'
 import { useWindowSize } from '@/utils/hooks'
 
 import Modal, { type ModalType } from './Modal'
@@ -30,7 +30,8 @@ const styles = createStyle({
     position: 'absolute',
     // borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'lightgray',
-    borderRadius: 2,
+    borderRadius: Platform.OS == 'ios' ? 12 : 2,
+    overflow: 'hidden',
     backgroundColor: 'white',
     elevation: 3,
   },
@@ -157,6 +158,8 @@ const Menu = ({
                       style={{ ...styles.menuItem, width: menuItemStyle.width, height: menuItemStyle.height }}
                       underlayColor={theme['c-primary-background-active']}
                       onPress={() => { menuPress(menu) }}
+                      accessibilityRole="menuitem"
+                      accessibilityLabel={menu.label}
                     >
                       <Text style={{ textAlign: center ? 'center' : 'left' }} size={fontSize} numberOfLines={1}>{menu.label}</Text>
                     </TouchableHighlight>

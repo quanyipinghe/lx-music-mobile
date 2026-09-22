@@ -1,4 +1,5 @@
 import { memo } from 'react'
+import { Platform } from 'react-native'
 
 import Theme from '../Theme'
 import Section from '../../components/Section'
@@ -27,15 +28,15 @@ export default memo(() => {
     <Section title={t('setting_basic')}>
       <IsStartupAutoPlay />
       <IsStartupPushPlayDetailScreen />
-      <IsShowBackBtn />
-      <IsShowExitBtn />
+      {Platform.OS == 'ios' ? null : <IsShowBackBtn />}
+      {Platform.OS == 'ios' ? null : <IsShowExitBtn />}
       <IsAutoHidePlayBar />
-      <IsHomePageScroll />
+      {Platform.OS == 'ios' ? null : <IsHomePageScroll />}
       <IsAllowProgressBarSeek />
       <IsUseSystemFileSelector />
       <IsAlwaysKeepStatusbarHeight />
       <Theme />
-      <DrawerLayoutPosition />
+      {Platform.OS == 'ios' ? null : <DrawerLayoutPosition />}
       <Language />
       <FontSize />
       <ShareType />

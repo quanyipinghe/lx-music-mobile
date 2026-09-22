@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from 'react'
-import { View } from 'react-native'
+import { Platform, View } from 'react-native'
 // import { useLayout } from '@/utils/hooks'
 import { usePlayerMusicInfo } from '@/store/player/hook'
 import { useWindowSize } from '@/utils/hooks'
@@ -40,7 +40,7 @@ export default memo(({ componentId }: { componentId: string }) => {
         <Image url={pic} nativeID={NAV_SHEAR_NATIVE_IDS.playDetail_pic} style={{
           width: imgWidth,
           height: imgWidth,
-          borderRadius: 2,
+          borderRadius: Platform.OS == 'ios' ? 16 : 2,
         }} />
       </View>
     </View>
@@ -59,6 +59,6 @@ const styles = createStyle({
   content: {
     // elevation: 3,
     backgroundColor: 'rgba(0,0,0,0)',
-    borderRadius: 4,
+    borderRadius: Platform.OS == 'ios' ? 16 : 4,
   },
 })

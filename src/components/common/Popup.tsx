@@ -1,5 +1,5 @@
 import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react'
-import { View, TouchableOpacity } from 'react-native'
+import { Platform, View, TouchableOpacity } from 'react-native'
 
 import Modal, { type ModalType } from './Modal'
 import { Icon } from '@/components/common/Icon'
@@ -23,8 +23,8 @@ const styles = createStyle({
   header: {
     flex: 0,
     flexDirection: 'row',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
+    borderTopLeftRadius: Platform.OS == 'ios' ? 16 : 8,
+    borderTopRightRadius: Platform.OS == 'ios' ? 16 : 8,
   },
   title: {
     paddingLeft: 10,
@@ -39,8 +39,8 @@ const styles = createStyle({
     // borderTopRightRadius: 8,
     flexGrow: 0,
     flexShrink: 0,
-    height: 30,
-    width: 30,
+    height: Platform.OS == 'ios' ? 44 : 30,
+    width: Platform.OS == 'ios' ? 44 : 30,
     justifyContent: 'center',
     alignItems: 'center',
     // backgroundColor: '#eee',
@@ -83,7 +83,7 @@ export default forwardRef<PopupType, PopupProps>(({
   }))
 
   const closeBtnComponent = useMemo(() => closeBtn
-    ? <TouchableOpacity style={styles.closeBtn} onPress={() => modalRef.current?.setVisible(false)}>
+    ? <TouchableOpacity style={styles.closeBtn} onPress={() => modalRef.current?.setVisible(false)} accessibilityRole="button" accessibilityLabel="关闭">
         <Icon name="close" style={{ color: theme['c-font-label'] }} size={12} />
       </TouchableOpacity>
     : null, [closeBtn, theme])
@@ -161,8 +161,8 @@ export default forwardRef<PopupType, PopupProps>(({
             maxHeight: '78%',
             minHeight: '20%',
             // backgroundColor: 'white',
-            borderTopLeftRadius: 8,
-            borderTopRightRadius: 8,
+            borderTopLeftRadius: Platform.OS == 'ios' ? 16 : 8,
+            borderTopRightRadius: Platform.OS == 'ios' ? 16 : 8,
           },
         ] as const
     }

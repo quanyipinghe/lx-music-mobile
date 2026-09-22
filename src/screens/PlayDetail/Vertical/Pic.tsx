@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { View } from 'react-native'
+import { Platform, View } from 'react-native'
 // import { useLayout } from '@/utils/hooks'
 import { createStyle } from '@/utils/tools'
 import { usePlayerMusicInfo } from '@/store/player/hook'
@@ -33,7 +33,7 @@ export default ({ componentId }: { componentId: string }) => {
     return {
       width: imgWidth,
       height: imgWidth,
-      borderRadius: 2,
+      borderRadius: Platform.OS == 'ios' ? 16 : 2,
     }
   }, [statusBarHeight, winHeight, winWidth])
 
@@ -57,6 +57,6 @@ const styles = createStyle({
   content: {
     // elevation: 3,
     backgroundColor: 'rgba(0,0,0,0)',
-    borderRadius: 4,
+    borderRadius: Platform.OS == 'ios' ? 16 : 4,
   },
 })
