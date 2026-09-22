@@ -61,23 +61,23 @@ export default memo(({ item, index, showSource, onPress, onLongPress, onShowMenu
   return (
     <View style={{ ...styles.listItem, width: rowInfo.rowWidth, height: ITEM_HEIGHT, backgroundColor: isSelected ? theme['c-primary-background-hover'] : 'rgba(0,0,0,0)' }}>
       <TouchableOpacity style={styles.listItemLeft} onPress={() => { onPress(item, index) }} onLongPress={() => { onLongPress(item, index) }}>
-        <Text style={styles.sn} size={13} color={theme['c-300']}>{index + 1}</Text>
+        <Text style={styles.sn} size={13} color={theme['c-font-label']}>{index + 1}</Text>
         <View style={styles.itemInfo}>
-          <Text numberOfLines={1}>{item.name}</Text>
+          <Text numberOfLines={1} color={theme['c-font']}>{item.name}</Text>
           <View style={styles.listItemSingle}>
             { tagInfo.type ? <Badge type={tagInfo.type}>{tagInfo.text}</Badge> : null }
             { showSource ? <Badge type="tertiary">{item.source}</Badge> : null }
-            <Text style={styles.listItemSingleText} size={11} color={theme['c-500']} numberOfLines={1}>{singer}</Text>
+            <Text style={styles.listItemSingleText} size={11} color={theme['c-font-label']} numberOfLines={1}>{singer}</Text>
           </View>
         </View>
         {
           isShowInterval ? (
-            <Text size={12} color={theme['c-250']} numberOfLines={1}>{item.interval}</Text>
+            <Text size={12} color={theme['c-font-label']} numberOfLines={1}>{item.interval}</Text>
           ) : null
         }
       </TouchableOpacity>
-     <TouchableOpacity onPress={handleShowMenu} ref={moreButtonRef} style={styles.moreButton}>
-        <Icon name="dots-vertical" style={{ color: theme['c-350'] }} size={12} />
+      <TouchableOpacity onPress={handleShowMenu} ref={moreButtonRef} style={styles.moreButton} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+        <Icon name="dots-vertical" color={theme['c-font-label']} size={14} />
       </TouchableOpacity>
     </View>
   )
@@ -108,46 +108,31 @@ const styles = createStyle({
     alignItems: 'center',
   },
   sn: {
-    width: 38,
-    // fontSize: 12,
+    width: 36,
     textAlign: 'center',
-    // backgroundColor: 'rgba(0,0,0,0.2)',
-    paddingLeft: 3,
-    paddingRight: 3,
+    paddingLeft: 2,
+    paddingRight: 2,
   },
   itemInfo: {
     flexGrow: 1,
     flexShrink: 1,
     paddingRight: 2,
-    // paddingTop: 10,
-    // paddingBottom: 10,
   },
-  // listItemTitle: {
-  //   // backgroundColor: 'rgba(0,0,0,0.2)',
-  //   flexGrow: 0,
-  //   flexShrink: 1,
-  //   // fontSize: 15,
-  // },
   listItemSingle: {
     paddingTop: 2,
     flexDirection: 'row',
     alignItems: 'center',
-    // alignItems: 'flex-end',
-    // backgroundColor: 'rgba(0,0,0,0.2)',
   },
   listItemTimeLabel: {
     marginRight: 5,
     fontWeight: '400',
   },
   listItemSingleText: {
-    // fontSize: 13,
-    // paddingTop: 2,
     flexGrow: 0,
     flexShrink: 1,
-    fontWeight: '300',
+    fontWeight: '400',
   },
   listItemBadge: {
-    // fontSize: 10,
     paddingLeft: 5,
     paddingTop: 2,
     alignSelf: 'flex-start',
@@ -159,13 +144,11 @@ const styles = createStyle({
     justifyContent: 'center',
   },
   moreButton: {
-    height: '80%',
-    paddingLeft: 16,
-    paddingRight: 16,
-    // paddingTop: 10,
-    // paddingBottom: 10,
-    // backgroundColor: 'rgba(0,0,0,0.2)',
+    height: '100%',
+    paddingLeft: 12,
+    paddingRight: 12,
     justifyContent: 'center',
+    alignItems: 'center',
   },
 })
 

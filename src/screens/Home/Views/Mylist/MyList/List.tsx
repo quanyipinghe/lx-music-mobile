@@ -45,18 +45,32 @@ const ListItem = memo(({ item, index, activeId, onPress, onShowMenu }: {
   }
 
   return (
-    <View style={{ ...styles.listItem, height: ITEM_HEIGHT }}>
+    <View
+      style={[
+        styles.listItem,
+        {
+          height: ITEM_HEIGHT,
+          backgroundColor: active ? theme['c-primary-background-active'] : 'transparent',
+        },
+      ]}
+    >
       {
         active
-          ? <Icon style={styles.listActiveIcon} name="chevron-right" size={12} color={theme['c-primary-font']} />
+          ? <Icon style={styles.listActiveIcon} name="chevron-right" size={13} color={theme['c-primary']} />
           : null
       }
-      { fetching ? <Loading color={active ? theme['c-primary-font'] : theme['c-font']} style={styles.loading} /> : null }
+      { fetching ? <Loading color={active ? theme['c-primary'] : theme['c-font']} style={styles.loading} /> : null }
       <TouchableOpacity style={styles.listName} onPress={handlePress}>
-        <Text numberOfLines={1} color={active ? theme['c-primary-font'] : theme['c-font']}>{item.name}</Text>
+        <Text
+          numberOfLines={1}
+          style={active ? styles.listNameActive : undefined}
+          color={active ? theme['c-primary'] : theme['c-font']}
+        >
+          {item.name}
+        </Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleShowMenu} ref={moreButtonRef} style={styles.listMoreBtn}>
-        <Icon name="dots-vertical" color={theme['c-350']} size={12} />
+      <TouchableOpacity onPress={handleShowMenu} ref={moreButtonRef} style={styles.listMoreBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+        <Icon name="dots-vertical" color={theme['c-font-label']} size={13} />
       </TouchableOpacity>
     </View>
   )
@@ -140,51 +154,38 @@ const styles = createStyle({
     flexShrink: 1,
     flexGrow: 0,
   },
-  // listContainer: {
-  //   // borderBottomWidth: BorderWidths.normal2,
-  // },
-
   listItem: {
     height: 'auto',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingRight: 5,
-    paddingLeft: 5,
-    // borderBottomWidth: BorderWidths.normal,
+    paddingHorizontal: 8,
+    marginHorizontal: 6,
+    marginVertical: 1,
+    borderRadius: 8,
   },
   listActiveIcon: {
-    // width: 18,
-    marginLeft: 3,
-    // paddingRight: 5,
+    marginRight: 4,
     textAlign: 'center',
   },
   loading: {
-    marginLeft: 5,
+    marginLeft: 4,
+    marginRight: 4,
   },
   listName: {
     height: '100%',
-    // height: 46,
-    // paddingTop: 12,
-    // paddingBottom: 12,
     justifyContent: 'center',
     flexGrow: 1,
     flexShrink: 1,
-    paddingLeft: 5,
-    // backgroundColor: 'rgba(0,0,0,0.1)',
+    paddingLeft: 4,
   },
-  // listNameText: {
-  //   // height: 46,
-  //   fontSize: 14,
-  // },
+  listNameActive: {
+    fontWeight: '600',
+  },
   listMoreBtn: {
     height: '100%',
     width: 36,
-    // height: 46,
-    // paddingTop: 12,
-    // paddingBottom: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: 'rgba(0,0,0,0.1)',
   },
 })
 

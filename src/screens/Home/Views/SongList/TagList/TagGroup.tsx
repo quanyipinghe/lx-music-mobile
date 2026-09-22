@@ -16,56 +16,68 @@ export interface TagGroupProps {
 export default ({ name, list, onTagChange, activeId }: TagGroupProps) => {
   const theme = useTheme()
   return (
-    <View>
+    <View style={styles.group}>
       {
         name
-          ? <Text style={styles.tagTypeTitle} color={theme['c-font-label']}>{name}</Text>
+          ? <Text style={styles.tagTypeTitle} color={theme['c-font-label']} size={13}>{name}</Text>
           : null
       }
       <View style={styles.tagTypeList}>
-        {list.map(item => (
-          activeId == item.id
-            ? (
-                <View style={{ ...styles.tagButton, backgroundColor: theme['c-button-background'] }} key={item.id}>
-                  <Text style={styles.tagButtonText} color={theme['c-primary-font-active']}>{item.name}</Text>
-                </View>
-              )
-            : (
-                <Button
-                  style={{ ...styles.tagButton, backgroundColor: theme['c-button-background'] }}
-                  key={item.id}
-                  onPress={() => { onTagChange(item.name, item.id) }}
-                >
-                  <Text style={styles.tagButtonText} color={theme['c-font']} >{item.name}</Text>
-                </Button>
-              )
-
-        ))}
+        {list.map(item => {
+          const active = activeId == item.id
+          return (
+            <Button
+              key={item.id}
+              style={[
+                styles.tagButton,
+                {
+                  backgroundColor: active ? theme['c-primary-background-active'] : theme['c-button-background'],
+                  borderColor: active ? theme['c-primary'] : 'transparent',
+                },
+              ]}
+              onPress={() => { onTagChange(item.name, item.id) }}
+            >
+              <Text
+                style={[styles.tagButtonText, active && styles.tagButtonTextActive]}
+                color={active ? theme['c-primary'] : theme['c-font']}
+              >
+                {item.name}
+              </Text>
+            </Button>
+          )
+        })}
       </View>
     </View>
   )
 }
 
 const styles = createStyle({
+  group: {
+    marginBottom: 8,
+  },
   tagTypeTitle: {
-    marginTop: 15,
-    marginBottom: 10,
+    marginTop: 12,
+    marginBottom: 8,
+    fontWeight: '600',
   },
   tagTypeList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
   tagButton: {
-    // marginRight: 10,
-    borderRadius: 4,
-    marginRight: 10,
-    marginBottom: 10,
+    borderRadius: 16,
+    borderWidth: 1,
+    marginRight: 8,
+    marginBottom: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   tagButtonText: {
     fontSize: 13,
-    paddingLeft: 12,
-    paddingRight: 12,
-    paddingTop: 8,
-    paddingBottom: 8,
+  },
+  tagButtonTextActive: {
+    fontWeight: '600',
   },
 })

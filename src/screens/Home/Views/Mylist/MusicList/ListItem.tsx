@@ -48,31 +48,27 @@ export default memo(({ item, index, activeIndex, onPress, onShowMenu, onLongPres
       <TouchableOpacity style={styles.listItemLeft} onPress={() => { onPress(item, index) }} onLongPress={() => { onLongPress(item, index) }}>
         {
           active
-            ? <Icon style={styles.sn} name="play-outline" size={13} color={theme['c-primary-font']} />
-            : <Text style={styles.sn} size={13} color={theme['c-300']}>{index + 1}</Text>
+            ? <Icon style={styles.sn} name="play-outline" size={14} color={theme['c-primary']} />
+            : <Text style={styles.sn} size={13} color={theme['c-font-label']}>{index + 1}</Text>
         }
         <View style={styles.itemInfo}>
-          {/* <View style={styles.listItemTitle}> */}
-          <Text color={active ? theme['c-primary-font'] : theme['c-font']} numberOfLines={1}>{item.name}</Text>
-          {/* </View> */}
+          <Text color={active ? theme['c-primary'] : theme['c-font']} style={active ? styles.titleActive : undefined} numberOfLines={1}>{item.name}</Text>
           <View style={styles.listItemSingle}>
             <Badge>{item.source.toUpperCase()}</Badge>
-            <Text style={styles.listItemSingleText} size={11} color={active ? theme['c-primary-alpha-200'] : theme['c-500']} numberOfLines={1}>
+            <Text style={styles.listItemSingleText} size={11} color={active ? theme['c-primary-alpha-200'] : theme['c-font-label']} numberOfLines={1}>
               {singer}
             </Text>
           </View>
         </View>
         {
           isShowInterval ? (
-            <Text size={12} color={active ? theme['c-primary-alpha-400'] : theme['c-250']} numberOfLines={1}>{item.interval}</Text>
+            <Text size={12} color={active ? theme['c-primary-alpha-400'] : theme['c-font-label']} numberOfLines={1}>{item.interval}</Text>
           ) : null
         }
       </TouchableOpacity>
-      {/* <View style={styles.listItemRight}> */}
-      <TouchableOpacity onPress={handleShowMenu} ref={moreButtonRef} style={styles.moreButton}>
-        <Icon name="dots-vertical" style={{ color: theme['c-350'] }} size={12} />
+      <TouchableOpacity onPress={handleShowMenu} ref={moreButtonRef} style={styles.moreButton} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+        <Icon name="dots-vertical" color={theme['c-font-label']} size={14} />
       </TouchableOpacity>
-      {/* </View> */}
     </View>
   )
 }, (prevProps, nextProps) => {
@@ -105,42 +101,28 @@ const styles = createStyle({
     alignItems: 'center',
   },
   sn: {
-    width: 38,
-    // fontSize: 12,
+    width: 36,
     textAlign: 'center',
-    // backgroundColor: 'rgba(0,0,0,0.2)',
-    paddingLeft: 3,
-    paddingRight: 3,
+    paddingLeft: 2,
+    paddingRight: 2,
   },
   itemInfo: {
     flexGrow: 1,
     flexShrink: 1,
-    // paddingTop: 10,
-    // paddingBottom: 10,
     paddingRight: 2,
   },
-  // listItemTitle: {
-  //   flexGrow: 0,
-  //   flexShrink: 1,
-  // },
+  titleActive: {
+    fontWeight: '600',
+  },
   listItemSingle: {
     paddingTop: 3,
     flexDirection: 'row',
-    // alignItems: 'flex-end',
   },
   listItemSingleText: {
-    // backgroundColor: 'rgba(0,0,0,0.2)',
     flexGrow: 0,
     flexShrink: 1,
-    fontWeight: '300',
-    // fontSize: 15,
+    fontWeight: '400',
   },
-  // listItemBadge: {
-  //   // fontSize: 10,
-  //   paddingLeft: 5,
-  //   paddingTop: 2,
-  //   alignSelf: 'flex-start',
-  // },
   listItemRight: {
     flexGrow: 0,
     flexShrink: 0,
@@ -149,12 +131,10 @@ const styles = createStyle({
   },
 
   moreButton: {
-    height: '80%',
-    paddingLeft: 16,
-    paddingRight: 16,
-    // paddingTop: 10,
-    // paddingBottom: 10,
-    // backgroundColor: 'rgba(0,0,0,0.2)',
+    height: '100%',
+    paddingLeft: 12,
+    paddingRight: 12,
     justifyContent: 'center',
+    alignItems: 'center',
   },
 })

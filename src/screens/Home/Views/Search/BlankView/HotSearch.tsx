@@ -74,25 +74,20 @@ export default forwardRef<HotSearchType, ListProps>((props, ref) => {
 
 const styles = createStyle({
   title: {
-    // paddingLeft: 15,
     paddingTop: 15,
-    // paddingBottom: 10,
+    fontWeight: '600',
   },
   list: {
-    // paddingLeft: 15,
-    // paddingRight: 15,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    // paddingBottom: 15,
   },
   button: {
-    textAlign: 'center',
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 5,
-    paddingBottom: 5,
-    borderRadius: 4,
-    marginRight: 10,
-    marginTop: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 13,
+    paddingVertical: 6,
+    borderRadius: 16,
+    marginRight: 8,
+    marginTop: 10,
   },
 })

@@ -52,8 +52,8 @@ export default forwardRef<HeaderBarType, HeaderBarProps>(({ onSourceChange, onTi
 
 
   return (
-    <View style={{ ...styles.searchBar, borderBottomColor: theme['c-border-background'] }}>
-      <View style={styles.selector}>
+    <View style={styles.searchBar}>
+      <View style={[styles.selector, { backgroundColor: theme['c-button-background'] }]}>
         <SourceSelector ref={sourceSelectorRef} onSourceChange={onSourceChange} center />
       </View>
       <SearchInput
@@ -70,12 +70,17 @@ export default forwardRef<HeaderBarType, HeaderBarProps>(({ onSourceChange, onTi
 const styles = createStyle({
   searchBar: {
     flexDirection: 'row',
-    height: 38,
+    alignItems: 'center',
+    height: 48,
     zIndex: 2,
-    paddingRight: 10,
-    borderBottomWidth: BorderWidths.normal,
+    paddingHorizontal: 12,
+    marginBottom: 4,
   },
   selector: {
-    // width: 86,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    marginRight: 8,
   },
 })
+
