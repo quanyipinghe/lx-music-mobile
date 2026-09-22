@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "react-native run-android --active-arch-only",
     "ios": "react-native run-ios",
+    "ios:sim": "bash scripts/run-ios-sim.sh",
     "start": "react-native start",
     "sc": "react-native start --reset-cache",
     "postinstall": "node dependencies-patch.js",
