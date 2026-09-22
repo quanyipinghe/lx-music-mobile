@@ -62,35 +62,41 @@ export default memo(({ value, label, onChanged, ...props }: InputItemProps) => {
     textRef.current = text
   }
   return (
-    <View style={styles.container}>
-      <Text style={styles.label} size={14}>{label}</Text>
-      <Input
-        value={text}
-        ref={inputRef}
-        onChangeText={handleSetSelectMode}
-        style={{ ...styles.input, backgroundColor: theme['c-primary-input-background'] }}
-        {...props}
-        onBlur={saveValue}
-       />
+    <View style={[styles.container, { borderBottomColor: theme['c-border-background'] }]}>
+      <Text style={styles.label} size={15} color={theme['c-font']}>{label}</Text>
+      <View style={styles.inputWrapper}>
+        <Input
+          value={text}
+          ref={inputRef}
+          onChangeText={handleSetSelectMode}
+          style={{ ...styles.input, backgroundColor: theme['c-primary-input-background'] }}
+          {...props}
+          onBlur={saveValue}
+        />
+      </View>
     </View>
   )
 })
 
 const styles = StyleSheet.create({
   container: {
-    paddingLeft: 25,
-    marginBottom: 15,
+    paddingVertical: 12,
+    paddingHorizontal: 4,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   label: {
-    marginBottom: 2,
+    marginBottom: 8,
+    fontWeight: '500',
+  },
+  inputWrapper: {
+    flexDirection: 'row',
   },
   input: {
-    backgroundColor: 'rgba(0,0,0,0.2)',
     flexGrow: 1,
-    flexShrink: 1,
-    borderRadius: 4,
-    // paddingTop: 3,
-    // paddingBottom: 3,
-    maxWidth: 300,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    minHeight: 40,
+    maxWidth: 420,
   },
 })

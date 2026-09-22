@@ -150,9 +150,10 @@ export default memo(({ setHost }: {
 const styles = createStyle({
   btn: {
     flexDirection: 'row',
-    marginLeft: 25,
+    paddingHorizontal: 4,
     marginBottom: 15,
   },
+
   tipText: {
     textAlign: 'center',
     marginTop: 15,

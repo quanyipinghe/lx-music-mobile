@@ -1,4 +1,4 @@
-import { Platform, View } from 'react-native'
+import { View } from 'react-native'
 
 import { createStyle } from '@/utils/tools'
 import { useTheme } from '@/store/theme/hook'
@@ -10,13 +10,18 @@ interface Props {
   children: React.ReactNode | React.ReactNode[]
 }
 
+/**
+ * 设置模块分组组件（无卡片背景框，通透扁平化风格）
+ */
 export default ({ title, children }: Props) => {
   const theme = useTheme()
 
   return (
-    <View style={[styles.container, Platform.OS == 'ios' && { backgroundColor: theme['c-button-background'] }]}>
-      <Text style={{ ...styles.title, borderLeftColor: theme['c-primary'] }} size={16} >{title}</Text>
-      <View>
+    <View style={styles.container}>
+      <Text style={styles.title} color={theme['c-primary']} size={14}>
+        {title}
+      </Text>
+      <View style={styles.body}>
         {children}
       </View>
     </View>
@@ -26,12 +31,15 @@ export default ({ title, children }: Props) => {
 
 const styles = createStyle({
   container: {
-    ...(Platform.OS == 'ios' ? { padding: 16, marginHorizontal: 12, marginVertical: 8, borderRadius: 14, overflow: 'hidden' as const } : null),
+    marginBottom: 20,
   },
   title: {
-    borderLeftWidth: 5,
-    paddingLeft: 12,
-    marginBottom: 10,
-    // lineHeight: 16,
+    paddingHorizontal: 4,
+    paddingVertical: 8,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+  },
+  body: {
+    // 列表项容器保持通透
   },
 })

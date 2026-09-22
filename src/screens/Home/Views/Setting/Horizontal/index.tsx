@@ -18,12 +18,12 @@ const styles = createStyle({
     borderRightWidth: BorderWidths.normal,
   },
   main: {
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingTop: 15,
-    paddingBottom: 15,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 28,
     flex: 0,
   },
+
 })
 
 export default () => {

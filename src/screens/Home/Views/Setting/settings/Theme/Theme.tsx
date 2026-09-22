@@ -56,16 +56,26 @@ const MoreBtn = ({ showAll, setShowAll }: {
   const t = useI18n()
 
   return (
-    showAll ? null
-      : (
-          <TouchableOpacity style={styles.moreBtn} activeOpacity={0.5} onPress={() => { setShowAll(!showAll) }}>
-            <Text size={14} color={theme['c-primary-font']} numberOfLines={1}>{t('setting_basic_theme_more_btn_show')}</Text>
-            <Icon name="chevron-right" size={12} color={theme['c-primary-font']} />
-          </TouchableOpacity>
-        )
-
+    <TouchableOpacity
+      style={styles.moreBtn}
+      activeOpacity={0.5}
+      onPress={() => { setShowAll(!showAll) }}
+      accessibilityRole="button"
+      accessibilityLabel={t(showAll ? 'setting_basic_theme_more_btn_hide' : 'setting_basic_theme_more_btn_show')}
+    >
+      <Text size={14} color={theme['c-primary-font']} numberOfLines={1}>
+        {t(showAll ? 'setting_basic_theme_more_btn_hide' : 'setting_basic_theme_more_btn_show')}
+      </Text>
+      <Icon
+        name="chevron-right"
+        size={12}
+        color={theme['c-primary-font']}
+        style={{ transform: [{ rotate: showAll ? '270deg' : '90deg' }] }}
+      />
+    </TouchableOpacity>
   )
 }
+
 
 interface ThemeInfo {
   themes: Readonly<LocalTheme[]>
@@ -153,10 +163,11 @@ const styles = createStyle({
     marginTop: 2,
   },
   moreBtn: {
-    marginLeft: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    // justifyContent: 'center',
-    gap: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 4,
+    gap: 4,
   },
+
 })

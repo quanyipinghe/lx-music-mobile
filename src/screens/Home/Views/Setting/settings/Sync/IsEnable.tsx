@@ -187,15 +187,17 @@ const styles = createStyle({
     marginTop: 5,
   },
   textAddr: {
-    marginLeft: 25,
-    marginTop: 5,
+    paddingHorizontal: 4,
+    marginTop: 8,
   },
   text: {
-    marginLeft: 25,
+    paddingHorizontal: 4,
+    marginTop: 4,
   },
   inputContent: {
     marginTop: 8,
   },
+
   authCodeContent: {
     flexGrow: 1,
     flexShrink: 1,

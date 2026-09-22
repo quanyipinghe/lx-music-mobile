@@ -19,11 +19,11 @@ export default memo(({ disabled, onPress, children }: ButtonProps) => {
 
 const styles = createStyle({
   button: {
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 5,
-    paddingBottom: 5,
-    borderRadius: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 18,
     marginRight: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 })
