@@ -75,6 +75,11 @@ compile_static_lib() {
   libtool -static -o "$target_dir/libLXLibFLAC.a" "$target_dir"/obj/*.o
 }
 
+if [ -d "$XCFRAMEWORK_PATH" ] && [ "${FORCE_REBUILD_FLAC:-0}" != "1" ]; then
+  echo "LXLibFLAC.xcframework 已存在，跳过编译 (如需重编请设置 FORCE_REBUILD_FLAC=1)。"
+  exit 0
+fi
+
 copy_headers
 rm -rf "$XCFRAMEWORK_PATH"
 
