@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
-import { ActionSheetIOS, Platform, TouchableOpacity } from 'react-native'
+import { ActionSheetIOS, Platform } from 'react-native'
 
 import DorpDownMenu, { type DorpDownMenuProps as _DorpDownMenuProps } from '@/components/common/DorpDownMenu'
+import Button from '@/components/common/Button'
 import Text from '@/components/common/Text'
 import { useI18n } from '@/lang'
 import { state } from '@/store/userApi'
@@ -66,9 +67,9 @@ export default ({ btnStyle, onImportAction }: BtnProps) => {
 
   if (Platform.OS == 'ios') {
     return (
-      <TouchableOpacity style={btnStyle} onPress={handleShowActionSheet}>
+      <Button style={btnStyle} onPress={handleShowActionSheet}>
         <Text size={14} color={theme['c-button-font']}>{t('user_api_btn_import')}</Text>
-      </TouchableOpacity>
+      </Button>
     )
   }
 

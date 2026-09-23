@@ -35,7 +35,14 @@ export default forwardRef<BtnType, BtnProps>(({ ripple: propsRipple = {}, disabl
     <Pressable
       android_ripple={ripple}
       disabled={disabled}
-      style={StyleSheet.compose({ opacity: disabled ? 0.3 : 1, minHeight: Platform.OS == 'ios' ? 44 : undefined, minWidth: Platform.OS == 'ios' ? 44 : undefined }, style)}
+      style={({ pressed }) => StyleSheet.compose(
+        {
+          opacity: disabled ? 0.3 : (pressed && Platform.OS == 'ios' ? 0.7 : 1),
+          minHeight: Platform.OS == 'ios' ? 44 : undefined,
+          minWidth: Platform.OS == 'ios' ? 44 : undefined,
+        },
+        typeof style === 'function' ? style({ pressed }) : style,
+      )}
       {...props}
       ref={btnRef}
     >

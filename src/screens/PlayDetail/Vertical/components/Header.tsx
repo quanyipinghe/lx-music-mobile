@@ -53,7 +53,12 @@ export default memo(() => {
     <View style={{ height: HEADER_HEIGHT + statusBarHeight, paddingTop: statusBarHeight }} nativeID={NAV_SHEAR_NATIVE_IDS.playDetail_header}>
       <StatusBar />
       <View style={styles.container}>
-        <Btn icon="chevron-down" size={20} onPress={back} />
+        <Btn
+          icon="chevron-right"
+          size={15}
+          iconStyle={{ transform: [{ rotate: '90deg' }] }}
+          onPress={back}
+        />
         <Title />
         <View style={styles.actions}>
           <TimeoutExitBtn />

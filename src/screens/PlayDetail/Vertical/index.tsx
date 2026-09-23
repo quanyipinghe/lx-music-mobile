@@ -84,7 +84,13 @@ export default memo(({ componentId }: { componentId: string }) => {
             duration: 200,
             useNativeDriver: true,
           }).start(() => {
-            void pop(commonState.componentIds.playDetail ?? componentId)
+            void pop(commonState.componentIds.playDetail ?? componentId, {
+              animations: {
+                pop: {
+                  enabled: false,
+                },
+              },
+            })
           })
         } else {
           Animated.spring(panY, {
@@ -139,7 +145,7 @@ export default memo(({ componentId }: { componentId: string }) => {
       style={[
         styles.root,
         {
-          backgroundColor: theme['c-content-background'],
+          backgroundColor: 'transparent',
           transform: [{ translateY: panY }],
         },
       ]}

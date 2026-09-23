@@ -1,14 +1,15 @@
-import { TouchableOpacity, type StyleProp, type ViewStyle } from 'react-native'
+import { TouchableOpacity, type StyleProp, type ViewStyle, type TextStyle } from 'react-native'
 import { Icon } from '@/components/common/Icon'
 import { createStyle } from '@/utils/tools'
 import { useTheme } from '@/store/theme/hook'
 
-export default ({ icon, size = 18, color, active = false, style, onPress }: {
-  icon: string
+export default ({ icon, size = 18, color, active = false, style, iconStyle, onPress }: {
+  icon: any
   size?: number
   color?: string
   active?: boolean
   style?: StyleProp<ViewStyle>
+  iconStyle?: StyleProp<TextStyle>
   onPress: () => void
 }) => {
   const theme = useTheme()
@@ -21,7 +22,7 @@ export default ({ icon, size = 18, color, active = false, style, onPress }: {
       activeOpacity={0.65}
       style={[styles.button, { backgroundColor: bgColor }, style]}
     >
-      <Icon name={icon} color={iconColor} size={size} />
+      <Icon name={icon} color={iconColor} size={size} style={iconStyle} />
     </TouchableOpacity>
   )
 }

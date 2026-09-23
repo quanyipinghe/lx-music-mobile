@@ -186,10 +186,10 @@ export function pushPlayDetailScreen(componentId: string, skipAnimation = false)
             },
             pop: {
               content: {
-                translationX: {
+                translationY: {
                   from: 0,
-                  to: windowSizeTools.getSize().width,
-                  duration: 300,
+                  to: windowSizeTools.getSize().height,
+                  duration: 250,
                 },
               },
             },

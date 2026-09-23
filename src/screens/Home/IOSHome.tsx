@@ -122,8 +122,18 @@ export default () => {
             {activeId == 'nav_songlist' || activeId == 'nav_top' ? <DiscoverySelector /> : null}
           </View>
           <View style={styles.page}>{page}</View>
-          <View style={[styles.player, iosShadow, { backgroundColor: theme['c-button-background'] }]}>
-            <PlayerBar isHome />
+          <View style={styles.playerWrapper}>
+            <View
+              style={[
+                styles.playerCard,
+                {
+                  backgroundColor: theme['c-content-background'],
+                  borderColor: theme['c-border-background'],
+                },
+              ]}
+            >
+              <PlayerBar isHome />
+            </View>
           </View>
           {!wide ? <Navigation vertical={false} discoveryId={discoveryId.current} /> : null}
         </View>
@@ -138,7 +148,21 @@ const styles = createStyle({
   header: { minHeight: 58, paddingHorizontal: IOS_UI.space + 4, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   title: { fontWeight: '700', flexShrink: 1, marginRight: 12 },
   page: { flex: 1, overflow: 'hidden' },
-  player: { marginHorizontal: IOS_UI.space, borderRadius: IOS_UI.radius, overflow: 'hidden' },
+  playerWrapper: {
+    marginHorizontal: IOS_UI.space,
+    marginBottom: 8,
+    borderRadius: IOS_UI.radius,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 6,
+  },
+  playerCard: {
+    borderRadius: IOS_UI.radius,
+    overflow: 'hidden',
+    borderWidth: 1,
+  },
   bottomNav: { height: IOS_UI.navHeight, flexDirection: 'row', paddingHorizontal: 4 },
   sideNav: { width: 116, paddingTop: 18, paddingHorizontal: 8 },
   navItem: { flex: 1, minHeight: IOS_UI.controlSize, alignItems: 'center', justifyContent: 'center' },

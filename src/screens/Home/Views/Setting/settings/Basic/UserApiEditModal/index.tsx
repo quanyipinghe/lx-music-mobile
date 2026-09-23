@@ -182,17 +182,19 @@ const styles = createStyle({
   },
   btns: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 15,
     paddingBottom: 15,
-    paddingLeft: 15,
-    // paddingRight: 15,
+    gap: 12,
   },
   btn: {
     flex: 1,
-    padding: 10,
+    height: 44,
+    minHeight: 44,
     alignItems: 'center',
-    borderRadius: 4,
-    marginRight: 15,
+    justifyContent: 'center',
+    borderRadius: 10,
   },
 })
 

@@ -7,17 +7,21 @@ import Text from '@/components/common/Text'
 /**
  * 现代化次级选项组容器（如音质、语言、缓存等设置模块）
  */
-export default memo(({ title, children }: {
+export default memo(({ title, action, children }: {
   title: string
+  action?: React.ReactNode
   children: React.ReactNode | React.ReactNode[]
 }) => {
   const theme = useTheme()
 
   return (
     <View style={[styles.container, { borderBottomColor: theme['c-border-background'] }]}>
-      <Text style={styles.title} size={15} color={theme['c-font']}>
-        {title}
-      </Text>
+      <View style={styles.header}>
+        <Text style={styles.title} size={15} color={theme['c-font']}>
+          {title}
+        </Text>
+        {action}
+      </View>
       <View style={styles.content}>
         {children}
       </View>
@@ -31,8 +35,13 @@ const styles = createStyle({
     paddingHorizontal: 4,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
   title: {
-    marginBottom: 10,
     fontWeight: '500',
   },
   content: {

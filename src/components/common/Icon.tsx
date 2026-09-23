@@ -69,3 +69,6 @@ export {
   // IconZocial,
   // IconSimpleLineIcons,
 }
+
+export default Icon
+
