@@ -48,6 +48,11 @@ interface GlobalData {
    */
   homePagerIdle: boolean
 
+  /**
+   * 是否有弹窗处于打开状态，用于防止背景页面捕获手势
+   */
+  hasModalOpen: boolean
+
   // windowInfo: {
   //   screenW: number
   //   screenH: number

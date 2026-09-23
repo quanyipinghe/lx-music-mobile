@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { Icon } from '@/components/common/Icon'
 import { useIsPlay } from '@/store/player/hook'
@@ -6,6 +7,7 @@ import { playNext, playPrev, togglePlay } from '@/core/player/player'
 import { createStyle } from '@/utils/tools'
 import { useHorizontalMode } from '@/utils/hooks'
 import { markTimeoutExitInteraction } from '@/core/player/timeoutExit'
+import PlayListModal, { type PlayListModalType } from '@/components/player/PlayListModal'
 
 const BTN_SIZE = 24
 const handlePlayPrev = () => {
@@ -51,6 +53,31 @@ const TogglePlayBtn = () => {
   )
 }
 
+const PlayListBtn = () => {
+  const theme = useTheme()
+  const playListModalRef = useRef<PlayListModalType>(null)
+
+  const handleShowPlayList = () => {
+    markTimeoutExitInteraction()
+    playListModalRef.current?.show()
+  }
+
+  return (
+    <>
+      <TouchableOpacity
+        style={styles.cotrolBtn}
+        activeOpacity={0.5}
+        onPress={handleShowPlayList}
+        accessibilityRole="button"
+        accessibilityLabel={global.i18n.t('play_list_btn_label')}
+      >
+        <Icon name="menu" color={theme['c-button-font']} size={20} />
+      </TouchableOpacity>
+      <PlayListModal ref={playListModalRef} />
+    </>
+  )
+}
+
 export default () => {
   const isHorizontalMode = useHorizontalMode()
   return (
@@ -65,6 +92,7 @@ export default () => {
       { isHorizontalMode ? <PlayPrevBtn /> : null }
       <TogglePlayBtn />
       <PlayNextBtn />
+      <PlayListBtn />
     </>
   )
 }

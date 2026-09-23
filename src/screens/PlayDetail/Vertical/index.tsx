@@ -53,7 +53,7 @@ export default memo(({ componentId }: { componentId: string }) => {
     PanResponder.create({
       onStartShouldSetPanResponder: () => false,
       onMoveShouldSetPanResponder: (evt, gestureState) => {
-        if (isDismissingRef.current) return false
+        if (isDismissingRef.current || global.lx.hasModalOpen) return false
         // 判定垂直向下滑动，且垂直位移明显大于横向位移
         const isVerticalDown = gestureState.dy > 12 && Math.abs(gestureState.dy) > Math.abs(gestureState.dx) * 1.5
         if (!isVerticalDown) return false
