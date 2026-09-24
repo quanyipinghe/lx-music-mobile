@@ -1,6 +1,12 @@
 import { useRef, useImperativeHandle, forwardRef, useState } from 'react'
+import { Platform, ScrollView, TouchableOpacity, View } from 'react-native'
 import { useI18n } from '@/lang'
 import Menu, { type Menus, type MenuType, type Position } from '@/components/common/Menu'
+import Popup, { type PopupType } from '@/components/common/Popup'
+import Text from '@/components/common/Text'
+import { Icon } from '@/components/common/Icon'
+import { useTheme } from '@/store/theme/hook'
+import { createStyle } from '@/utils/tools'
 import { LIST_IDS } from '@/config/constant'
 import musicSdk from '@/utils/musicSdk'
 import { scaleSizeW } from '@/utils/pixelRatio'
@@ -16,6 +22,19 @@ export interface SelectInfo {
 const initSelectInfo = {}
 
 const menuItemWidth = scaleSizeW(150)
+// 主题里没有表示危险操作的颜色,用 iOS 系统红
+const DANGER_COLOR = '#f25757'
+// 图标字体里可选的不多,挑语义最接近的;颜色固定,不随主题变
+const SHEET_ICONS: Record<string, [string, string]> = {
+  new: ['add_folder', '#f0616d'],
+  rename: ['eraser', '#7c6cf0'],
+  sort: ['list-order', '#3d8bf2'],
+  duplicateMusic: ['list-loop', '#3fb950'],
+  local_file: ['sd-card', '#f59e2c'],
+  sync: ['available_updates', '#e8663d'],
+  import: ['download-2', '#1fb2a6'],
+  export: ['share', '#a25ee8'],
+}
 
 
 export interface ListMenuProps {
@@ -37,6 +56,8 @@ export type {
   Position,
 }
 
+const isIOS = Platform.OS == 'ios'
+
 export default forwardRef<ListMenuType, ListMenuProps>(({
   onNew,
   onRename,
@@ -49,7 +70,10 @@ export default forwardRef<ListMenuType, ListMenuProps>(({
   onRemove,
 }, ref) => {
   const t = useI18n()
+  const theme = useTheme()
   const menuRef = useRef<MenuType>(null)
+  const popupRef = useRef<PopupType>(null)
+  const [title, setTitle] = useState('')
   const selectInfoRef = useRef<SelectInfo>(initSelectInfo as SelectInfo)
   const [menus, setMenus] = useState<Menus>([])
   const [visible, setVisible] = useState(false)
@@ -58,12 +82,15 @@ export default forwardRef<ListMenuType, ListMenuProps>(({
     show(selectInfo, position) {
       selectInfoRef.current = selectInfo
       handleSetMenu(selectInfo.listInfo)
-      if (visible) menuRef.current?.show(position)
+      setTitle(selectInfo.listInfo.name)
+      const open = () => {
+        if (isIOS) popupRef.current?.setVisible(true)
+        else menuRef.current?.show(position)
+      }
+      if (visible) open()
       else {
         setVisible(true)
-        requestAnimationFrame(() => {
-          menuRef.current?.show(position)
-        })
+        requestAnimationFrame(open)
       }
     },
   }))
@@ -139,6 +166,58 @@ export default forwardRef<ListMenuType, ListMenuProps>(({
     }
   }
 
+  if (isIOS) {
+    // 底部面板里不可用的项直接隐藏,移除单独做成底部按钮
+    const items = menus.filter(m => !m.disabled && m.action != 'remove')
+    const removeMenu = menus.find(m => m.action == 'remove' && !m.disabled)
+    const handleSheetPress = (menu: typeof menus[number]) => {
+      popupRef.current?.setVisible(false)
+      handleMenuPress(menu)
+    }
+    return (
+      visible
+        ? (
+            <Popup ref={popupRef} title={title}>
+              <View style={styles.sheet} onStartShouldSetResponder={() => true}>
+                <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+                  {items.map(menu => {
+                    const [icon, color] = SHEET_ICONS[menu.action] ?? ['menu', theme['c-primary']]
+                    return (
+                      <TouchableOpacity
+                        key={menu.action}
+                        activeOpacity={0.6}
+                        onPress={() => { handleSheetPress(menu) }}
+                        accessibilityRole="button"
+                        accessibilityLabel={menu.label}
+                        style={[styles.item, { backgroundColor: theme['c-button-background'] }]}
+                      >
+                        <View style={[styles.iconWrap, { backgroundColor: color + '26' }]}>
+                          <Icon name={icon} size={16} color={color} />
+                        </View>
+                        <Text size={15} style={styles.label} numberOfLines={1}>{menu.label}</Text>
+                        <Icon name="chevron-right" size={11} color={theme['c-font-label']} />
+                      </TouchableOpacity>
+                    )
+                  })}
+                </ScrollView>
+                {removeMenu ? (
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => { handleSheetPress(removeMenu) }}
+                    accessibilityRole="button"
+                    accessibilityLabel={removeMenu.label}
+                    style={[styles.removeBtn, { backgroundColor: DANGER_COLOR }]}
+                  >
+                    <Text size={16} color="#fff" style={styles.removeText}>{removeMenu.label}</Text>
+                  </TouchableOpacity>
+                ) : null}
+              </View>
+            </Popup>
+          )
+        : null
+    )
+  }
+
   return (
     visible
       ? <Menu
@@ -149,4 +228,51 @@ export default forwardRef<ListMenuType, ListMenuProps>(({
         />
       : null
   )
+})
+
+const styles = createStyle({
+  sheet: {
+    flexShrink: 1,
+    paddingTop: 4,
+    paddingBottom: 30,
+  },
+  scroll: {
+    flexGrow: 0,
+    flexShrink: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 16,
+  },
+  item: {
+    height: 54,
+    marginBottom: 8,
+    paddingLeft: 12,
+    paddingRight: 14,
+    borderRadius: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconWrap: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  label: {
+    flex: 1,
+    marginLeft: 14,
+  },
+  removeBtn: {
+    height: 50,
+    marginHorizontal: 16,
+    marginTop: 14,
+    borderRadius: 25,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  removeText: {
+    fontWeight: '600',
+  },
 })
