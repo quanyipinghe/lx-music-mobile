@@ -55,6 +55,7 @@ export default memo(() => {
       <View style={styles.container}>
         <Btn
           icon="chevron-right"
+          label={global.i18n.t('back')}
           size={15}
           iconStyle={{ transform: [{ rotate: '90deg' }] }}
           onPress={back}
@@ -62,8 +63,8 @@ export default memo(() => {
         <Title />
         <View style={styles.actions}>
           <TimeoutExitBtn />
-          <Btn icon="slider" size={17} active={isSoundEffectActive(setting)} onPress={showSoundEffect} />
-          <Btn icon="setting" size={17} onPress={showSetting} />
+          <Btn icon="slider" label={global.i18n.t('setting_play_sound_effect')} size={17} active={isSoundEffectActive(setting)} onPress={showSoundEffect} />
+          <Btn icon="setting" label={global.i18n.t('play_detail_setting_title')} size={17} onPress={showSetting} />
         </View>
       </View>
       <SoundEffectPopup ref={soundEffectPopupRef} layoutMode="stacked" />

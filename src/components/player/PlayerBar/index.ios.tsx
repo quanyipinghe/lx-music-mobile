@@ -17,7 +17,7 @@ const BottomProgressLine = () => {
   const percentage = maxPlayTime > 0 ? Math.min(100, Math.max(0, (progress / maxPlayTime) * 100)) : 0
 
   return (
-    <View style={styles.progressTrack}>
+    <View style={[styles.progressTrack, { backgroundColor: theme['c-border-background'] }]}>
       <View style={[styles.progressBar, { width: `${percentage}%`, backgroundColor: theme['c-primary'] }]} />
     </View>
   )
@@ -28,7 +28,7 @@ export default memo(({ isHome = false }: { isHome?: boolean }) => {
   const theme = useTheme()
   const autoHidePlayBar = useSettingValue('common.autoHidePlayBar')
   const player = useMemo(() => (
-    <View style={[styles.container, { backgroundColor: theme['c-content-background'] }]} accessibilityLabel="迷你播放器">
+    <View style={[styles.container, { backgroundColor: theme['c-content-background'] }]} accessibilityLabel={global.i18n.t('mini_player')}>
       <Pic isHome={isHome} />
       <View style={styles.center}>
         <Title isHome={isHome} />
@@ -59,7 +59,6 @@ const styles = createStyle({
     left: 0,
     right: 0,
     height: 2.5,
-    backgroundColor: 'rgba(0, 0, 0, 0.05)',
   },
   progressBar: {
     height: '100%',

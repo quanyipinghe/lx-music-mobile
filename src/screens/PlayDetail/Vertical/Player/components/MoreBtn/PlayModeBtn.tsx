@@ -37,27 +37,15 @@ export default memo(() => {
     toast(t(modeName))
   }
 
-  const playModeIcon = useMemo(() => {
-    let playModeIcon = null
+  const [playModeIcon, playModeName] = useMemo(() => {
     switch (togglePlayMethod) {
-      case MUSIC_TOGGLE_MODE.listLoop:
-        playModeIcon = 'list-loop'
-        break
-      case MUSIC_TOGGLE_MODE.random:
-        playModeIcon = 'list-random'
-        break
-      case MUSIC_TOGGLE_MODE.list:
-        playModeIcon = 'list-order'
-        break
-      case MUSIC_TOGGLE_MODE.singleLoop:
-        playModeIcon = 'single-loop'
-        break
-      default:
-        playModeIcon = 'single'
-        break
+      case MUSIC_TOGGLE_MODE.listLoop: return ['list-loop', 'play_list_loop'] as const
+      case MUSIC_TOGGLE_MODE.random: return ['list-random', 'play_list_random'] as const
+      case MUSIC_TOGGLE_MODE.list: return ['list-order', 'play_list_order'] as const
+      case MUSIC_TOGGLE_MODE.singleLoop: return ['single-loop', 'play_single_loop'] as const
+      default: return ['single', 'play_single'] as const
     }
-    return playModeIcon
   }, [togglePlayMethod])
 
-  return <Btn icon={playModeIcon} onPress={toggleNextPlayMode} />
+  return <Btn icon={playModeIcon} label={t(playModeName)} onPress={toggleNextPlayMode} />
 })

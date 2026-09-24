@@ -8,5 +8,5 @@ export default () => {
     navigations.pushCommentScreen(commonState.componentIds.playDetail!)
   }
 
-  return <Btn icon="comment" onPress={handleShowCommentScreen} />
+  return <Btn icon="comment" label={global.i18n.t('comment_btn_label')} onPress={handleShowCommentScreen} />
 }

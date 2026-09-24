@@ -18,7 +18,7 @@ const PrevBtn = ({ size }: { size: number }) => {
   }
   const btnSize = size * 0.85
   return (
-    <TouchableOpacity style={{ ...styles.cotrolBtn, width: btnSize, height: btnSize }} activeOpacity={0.5} onPress={handlePlayPrev}>
+    <TouchableOpacity style={{ ...styles.cotrolBtn, width: btnSize, height: btnSize }} activeOpacity={0.5} onPress={handlePlayPrev} accessibilityRole="button" accessibilityLabel={global.i18n.t('play_prev')}>
       <Icon name='prevMusic' color={theme['c-button-font']} rawSize={btnSize * 0.55} />
     </TouchableOpacity>
   )
@@ -31,7 +31,7 @@ const NextBtn = ({ size }: { size: number }) => {
   }
   const btnSize = size * 0.85
   return (
-    <TouchableOpacity style={{ ...styles.cotrolBtn, width: btnSize, height: btnSize }} activeOpacity={0.5} onPress={handlePlayNext}>
+    <TouchableOpacity style={{ ...styles.cotrolBtn, width: btnSize, height: btnSize }} activeOpacity={0.5} onPress={handlePlayNext} accessibilityRole="button" accessibilityLabel={global.i18n.t('play_next')}>
       <Icon name='nextMusic' color={theme['c-button-font']} rawSize={btnSize * 0.55} />
     </TouchableOpacity>
   )
@@ -53,6 +53,8 @@ const TogglePlayBtn = ({ size }: { size: number }) => {
         },
       ]}
       activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityLabel={global.i18n.t(isPlay ? 'pause' : 'play')}
       onPress={() => {
         markTimeoutExitInteraction()
         togglePlay()

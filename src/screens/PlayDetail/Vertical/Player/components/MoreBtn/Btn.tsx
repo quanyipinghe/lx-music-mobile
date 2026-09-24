@@ -7,15 +7,16 @@ import { scaleSizeW } from '@/utils/pixelRatio'
 export const BTN_WIDTH = scaleSizeW(36)
 export const BTN_ICON_SIZE = 24
 
-export default ({ icon, color, onPress, onLongPress }: {
+export default ({ icon, label, color, onPress, onLongPress }: {
   icon: string
+  label: string
   color?: string
   onPress: () => void
   onLongPress?: () => void
 }) => {
   const theme = useTheme()
   return (
-    <TouchableOpacity style={{ ...styles.cotrolBtn, width: BTN_WIDTH, height: BTN_WIDTH }} activeOpacity={0.5} onPress={onPress} onLongPress={onLongPress}>
+    <TouchableOpacity style={{ ...styles.cotrolBtn, width: BTN_WIDTH, height: BTN_WIDTH }} activeOpacity={0.5} onPress={onPress} onLongPress={onLongPress} accessibilityRole="button" accessibilityLabel={label}>
       <Icon name={icon} color={color ?? theme['c-font-label']} size={BTN_ICON_SIZE} />
     </TouchableOpacity>
   )

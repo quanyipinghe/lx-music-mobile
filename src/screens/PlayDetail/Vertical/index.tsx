@@ -36,6 +36,14 @@ export default memo(({ componentId }: { componentId: string }) => {
   const pageIndexRef = useRef(0)
   const isDismissingRef = useRef(false)
   const panY = useRef(new Animated.Value(0)).current
+  // 歌词区域在窗口中的实际位置,歌词页只允许在其上下方下滑关闭
+  const pagerWrapRef = useRef<View>(null)
+  const lyricAreaRef = useRef({ top: 0, bottom: Infinity })
+  const handlePagerLayout = () => {
+    pagerWrapRef.current?.measureInWindow((x, y, width, height) => {
+      lyricAreaRef.current = { top: y, bottom: y + height }
+    })
+  }
 
   const onPageSelected = ({ nativeEvent }: PagerViewOnPageSelectedEvent) => {
     setPageIndex(nativeEvent.position)
@@ -62,9 +70,8 @@ export default memo(({ componentId }: { componentId: string }) => {
         if (pageIndexRef.current === 0) return true
 
         // 歌词页 (pageIndex == 1) 仅顶部 Header 或底部控制区域可下滑关闭，避免与歌词滚动冲突
-        const winHeight = Dimensions.get('window').height
-        const touchY = evt.nativeEvent.pageY ?? evt.nativeEvent.locationY
-        return touchY < 120 || touchY > winHeight - 180
+        const touchY = evt.nativeEvent.pageY
+        return touchY < lyricAreaRef.current.top || touchY > lyricAreaRef.current.bottom
       },
       onPanResponderMove: (evt, gestureState) => {
         if (gestureState.dy > 0) {
@@ -127,7 +134,7 @@ export default memo(({ componentId }: { componentId: string }) => {
 
     const handleComponentIdsChange = (ids: CommonState['componentIds']) => {
       if (ids.comment) screenUnkeepAwake()
-      else if (AppState.currentState == 'active') screenkeepAwake()
+      else if (showLyricRef.current && AppState.currentState == 'active') screenkeepAwake()
     }
 
     global.state_event.on('componentIdsUpdated', handleComponentIdsChange)
@@ -153,17 +160,19 @@ export default memo(({ componentId }: { componentId: string }) => {
     >
       <Header />
       <View style={styles.container}>
-        <PagerView
-          onPageSelected={onPageSelected}
-          style={styles.pagerView}
-        >
-          <View collapsable={false}>
-            <Pic componentId={componentId} />
-          </View>
-          <View collapsable={false}>
-            <LyricPage activeIndex={pageIndex} />
-          </View>
-        </PagerView>
+        <View ref={pagerWrapRef} style={styles.pagerView} onLayout={handlePagerLayout}>
+          <PagerView
+            onPageSelected={onPageSelected}
+            style={styles.pagerView}
+          >
+            <View collapsable={false}>
+              <Pic componentId={componentId} />
+            </View>
+            <View collapsable={false}>
+              <LyricPage activeIndex={pageIndex} />
+            </View>
+          </PagerView>
+        </View>
         <Player />
       </View>
     </Animated.View>

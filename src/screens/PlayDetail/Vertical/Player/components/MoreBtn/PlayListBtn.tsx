@@ -14,7 +14,7 @@ export default () => {
 
   return (
     <>
-      <Btn icon="menu" onPress={handleShowPlayList} />
+      <Btn icon="menu" label={global.i18n.t('play_list_btn_label')} onPress={handleShowPlayList} />
       <PlayListModal ref={playListModalRef} />
     </>
   )

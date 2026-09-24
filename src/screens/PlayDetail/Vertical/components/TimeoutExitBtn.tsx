@@ -16,7 +16,7 @@ export default memo(() => {
 
   return (
     <>
-      <Btn icon="music_time" size={17} active={timeInfo.active} onPress={handleShow} />
+      <Btn icon="music_time" label={global.i18n.t('timeout_exit_page_title')} size={17} active={timeInfo.active} onPress={handleShow} />
       <TimeoutExitEditModal ref={modalRef} timeInfo={timeInfo} />
     </>
   )
