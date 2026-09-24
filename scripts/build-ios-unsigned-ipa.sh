@@ -2,13 +2,13 @@
 
 set -euo pipefail
 
-ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 BUILD_DIR="$ROOT_DIR/build"
 DERIVED_DATA_PATH="$BUILD_DIR/DerivedData"
 WORKSPACE="$ROOT_DIR/ios/LxMusicMobile.xcworkspace"
 VERSION="$(node -p "require('$ROOT_DIR/package.json').version")"
 VERSION_CODE="$(node -p "require('$ROOT_DIR/package.json').versionCode")"
-IPA_PATH="$BUILD_DIR/lx-music-mobile-v${VERSION}-ios-unsigned.ipa"
+IPA_PATH="$BUILD_DIR/lx-music-mobile-v${VERSION}-ios-unsigned.ipa.zip"
 CMAKE_BINARY="$(command -v cmake || true)"
 
 # 默认构建配置
@@ -154,3 +154,4 @@ rm -f "$IPA_PATH"
 )
 
 echo "==> 打包完成！无签名 IPA 地址: $IPA_PATH"
+open -R "$IPA_PATH"
