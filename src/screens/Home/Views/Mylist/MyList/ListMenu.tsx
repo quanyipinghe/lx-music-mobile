@@ -15,7 +15,7 @@ export interface SelectInfo {
 }
 const initSelectInfo = {}
 
-const menuItemWidth = scaleSizeW(110)
+const menuItemWidth = scaleSizeW(150)
 
 
 export interface ListMenuProps {

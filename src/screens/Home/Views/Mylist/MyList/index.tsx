@@ -3,14 +3,16 @@ import { useEffect, useRef, useState } from 'react'
 import ListMenu, { type ListMenuType } from './ListMenu'
 import ListNameEdit, { type ListNameEditType } from './ListNameEdit'
 import List from './List'
+import ListTabs from './ListTabs'
 import ListImportExport, { type ListImportExportType } from './ListImportExport'
 import { handleRemove, handleSync } from './listAction'
 import ListMusicSort, { type ListMusicSortType } from './ListMusicSort'
 import DuplicateMusic, { type DuplicateMusicType } from './DuplicateMusic'
 
 
-export default () => {
-  const [visible, setVisible] = useState(false)
+// tabs: iOS 下以顶部横向标签展示,不再放进抽屉,因此一开始就渲染
+export default ({ tabs = false }: { tabs?: boolean }) => {
+  const [visible, setVisible] = useState(tabs)
   const listMenuRef = useRef<ListMenuType>(null)
   const listNameEditRef = useRef<ListNameEditType>(null)
   const listMusicSortRef = useRef<ListMusicSortType>(null)
@@ -37,7 +39,9 @@ export default () => {
   return (
     visible
       ? <>
-          <List onShowMenu={(info, position) => listMenuRef.current?.show(info, position)} />
+          {tabs
+            ? <ListTabs onShowMenu={(info, position) => listMenuRef.current?.show(info, position)} onCreate={index => listNameEditRef.current?.showCreate(index)} />
+            : <List onShowMenu={(info, position) => listMenuRef.current?.show(info, position)} />}
           <ListNameEdit ref={listNameEditRef} />
           <ListMusicSort ref={listMusicSortRef} />
           <DuplicateMusic ref={duplicateMusicRef} />

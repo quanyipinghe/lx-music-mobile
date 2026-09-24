@@ -31,9 +31,18 @@ const styles = createStyle({
     // borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'lightgray',
     borderRadius: Platform.OS == 'ios' ? 12 : 2,
-    overflow: 'hidden',
+    // iOS 上 overflow: hidden 会裁掉阴影,圆角裁切交给内部 ScrollView
+    overflow: Platform.OS == 'ios' ? 'visible' : 'hidden',
     backgroundColor: 'white',
     elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.16,
+    shadowRadius: 16,
+  },
+  menuScroll: {
+    borderRadius: Platform.OS == 'ios' ? 12 : 2,
+    overflow: 'hidden',
   },
   menuItem: {
     paddingLeft: 10,
@@ -131,7 +140,7 @@ const Menu = ({
   // console.log(menuItemStyle)
   return (
     <View style={{ ...styles.menu, ...menuStyle, backgroundColor: theme['c-content-background'] }} onStartShouldSetResponder={() => true}>
-      <Animated.ScrollView keyboardShouldPersistTaps={'always'}>
+      <Animated.ScrollView style={styles.menuScroll} keyboardShouldPersistTaps={'always'}>
         {
           menus.map((menu, index) => (
             menu.disabled

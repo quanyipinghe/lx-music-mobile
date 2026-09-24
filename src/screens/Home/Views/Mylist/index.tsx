@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { Platform, View } from 'react-native'
 import settingState from '@/store/setting/state'
 import MusicList from './MusicList'
 import MyList from './MyList'
@@ -10,7 +11,14 @@ import type { InitState as CommonState } from '@/store/common/state'
 
 const MAX_WIDTH = scaleSizeW(400)
 
-export default () => {
+const IOSMylist = () => (
+  <View style={{ flex: 1 }}>
+    <MyList tabs />
+    <MusicList />
+  </View>
+)
+
+const DrawerMylist = () => {
   const drawer = useRef<DrawerLayoutFixedType>(null)
   const theme = useTheme()
   // const [width, setWidth] = useState(0)
@@ -68,3 +76,5 @@ export default () => {
     </DrawerLayoutFixed>
   )
 }
+
+export default Platform.OS == 'ios' ? IOSMylist : DrawerMylist
