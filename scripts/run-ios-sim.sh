@@ -50,5 +50,14 @@ else
   echo "==> Metro Bundler 已经在 8081 端口运行。"
 fi
 
+# build-ios-unsigned-ipa.sh 会把 Hermes 换成真机库,Xcode 增量构建不一定换回来,导致 Ld 失败
+HERMES_FW="ios/Pods/hermes-engine/destroot/Library/Frameworks/ios/hermes.framework"
+HERMES_SIM_FW="ios/Pods/hermes-engine/build/iphonesimulator/API/hermes/hermes.framework"
+if [ -d "$HERMES_SIM_FW" ] && ! vtool -show-build "$HERMES_FW/hermes" 2>/dev/null | grep -q "platform IOSSIMULATOR"; then
+  echo "==> 检测到 Hermes 非模拟器库,恢复模拟器库..."
+  rm -rf "$HERMES_FW"
+  cp -pR "$HERMES_SIM_FW" "$HERMES_FW"
+fi
+
 echo "==> 正在构建并运行应用到 $DEVICE_NAME ..."
 npx react-native run-ios --simulator="$DEVICE_NAME"
