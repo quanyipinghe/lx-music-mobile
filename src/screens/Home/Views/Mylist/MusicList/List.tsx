@@ -1,6 +1,6 @@
 import { playList } from '@/core/player/player'
 import { useMemo, useRef, useState, useEffect, forwardRef, useImperativeHandle } from 'react'
-import { FlatList, type NativeScrollEvent, type NativeSyntheticEvent, type FlatListProps } from 'react-native'
+import { FlatList, TouchableOpacity, View, type NativeScrollEvent, type NativeSyntheticEvent, type FlatListProps } from 'react-native'
 
 import listState from '@/store/list/state'
 import playerState from '@/store/player/state'
@@ -14,6 +14,7 @@ import type { Position } from './ListMenu'
 import type { SelectMode } from './MultipleModeBar'
 import { useActiveListId } from '@/store/list/hook'
 import { useSettingValue } from '@/store/setting/hook'
+import { useTheme } from '@/store/theme/hook'
 
 type FlatListType = FlatListProps<LX.Music.MusicInfo>
 
@@ -44,6 +45,18 @@ const usePlayIndex = () => {
 }
 
 
+// 图标字体里没有定位图标,用 View 拼一个准星:圆环 + 中心点 + 四个刻度
+const LocateIcon = ({ color }: { color: string }) => (
+  <View style={styles.locateIcon}>
+    <View style={{ ...styles.locateRing, borderColor: color }} />
+    <View style={{ ...styles.locateDot, backgroundColor: color }} />
+    <View style={{ ...styles.locateTickV, top: 0, backgroundColor: color }} />
+    <View style={{ ...styles.locateTickV, bottom: 0, backgroundColor: color }} />
+    <View style={{ ...styles.locateTickH, left: 0, backgroundColor: color }} />
+    <View style={{ ...styles.locateTickH, right: 0, backgroundColor: color }} />
+  </View>
+)
+
 const List = forwardRef<ListType, ListProps>(({ onShowMenu, onMuiltSelectMode, onSelectAll }, ref) => {
   // const t = useI18n()
   const flatListRef = useRef<FlatList>(null)
@@ -59,6 +72,7 @@ const List = forwardRef<ListType, ListProps>(({ onShowMenu, onMuiltSelectMode, o
   const rowInfo = useRef(getRowInfo())
   const isShowAlbumName = useSettingValue('list.isShowAlbumName')
   const isShowInterval = useSettingValue('list.isShowInterval')
+  const theme = useTheme()
   // console.log('render music list')
 
   useImperativeHandle(ref, () => ({
@@ -269,6 +283,7 @@ const List = forwardRef<ListType, ListProps>(({ onShowMenu, onMuiltSelectMode, o
   }
 
   return (
+    <>
     <FlatList
       ref={flatListRef}
       onScroll={handleScroll}
@@ -285,7 +300,21 @@ const List = forwardRef<ListType, ListProps>(({ onShowMenu, onMuiltSelectMode, o
       keyExtractor={getkey}
       extraData={activeIndex}
       getItemLayout={getItemLayout}
+      contentContainerStyle={activeIndex > -1 ? styles.listPadding : undefined}
     />
+    {
+      activeIndex > -1 ? (
+        <TouchableOpacity
+          style={{ ...styles.locateBtn, backgroundColor: theme['c-primary-background-active'] }}
+          onPress={() => { global.app_event.jumpListPosition() }}
+          accessibilityRole="button"
+          accessibilityLabel={global.i18n.t('list_locate_playing')}
+        >
+          <LocateIcon color={theme['c-primary']} />
+        </TouchableOpacity>
+      ) : null
+    }
+    </>
   )
 })
 
@@ -296,6 +325,55 @@ const styles = createStyle({
   list: {
     flexGrow: 1,
     flexShrink: 1,
+  },
+  // 给悬浮定位按钮留出位置,避免挡住最后一行的菜单按钮
+  listPadding: {
+    paddingBottom: 64,
+  },
+  locateBtn: {
+    position: 'absolute',
+    right: 16,
+    bottom: 16,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  locateIcon: {
+    width: 22,
+    height: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  locateRing: {
+    position: 'absolute',
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    borderWidth: 2,
+  },
+  locateDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  locateTickV: {
+    position: 'absolute',
+    left: 10,
+    width: 2,
+    height: 4,
+  },
+  locateTickH: {
+    position: 'absolute',
+    top: 10,
+    width: 4,
+    height: 2,
   },
 })
 
