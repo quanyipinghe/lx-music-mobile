@@ -13,6 +13,7 @@ import Text from '@/components/common/Text'
 import { LIST_IDS } from '@/config/constant'
 import Loading from '@/components/common/Loading'
 import { useSettingValue } from '@/store/setting/hook'
+import { playList } from '@/core/player/player'
 
 export interface ActiveListProps {
   onShowSearchBar: () => void
@@ -33,6 +34,13 @@ const useListMusicCount = (listId: string) => {
     return () => { global.app_event.off('myListMusicUpdate', handleChange) }
   }, [listId])
   return count
+}
+
+const handlePlayAll = () => {
+  const listId = listState.activeListId
+  void getListMusics(listId).then(list => {
+    if (list.length) void playList(listId, 0)
+  })
 }
 
 const IOSActiveList = forwardRef<ActiveListType, ActiveListProps>(({ onShowSearchBar, onScrollToTop }, ref) => {
@@ -56,6 +64,9 @@ const IOSActiveList = forwardRef<ActiveListType, ActiveListProps>(({ onShowSearc
   return (
     <TouchableOpacity activeOpacity={1} onLongPress={onScrollToTop} style={{ ...styles.currentList, ...styles.iosBar, opacity: visibleBar ? 1 : 0, borderBottomColor: theme['c-border-background'] }}>
       <Text style={styles.currentListText} size={13} numberOfLines={1} color={theme['c-font-label']}>{global.i18n.t('list_music_count', { count })}</Text>
+      <TouchableOpacity style={styles.currentListBtns} onPress={handlePlayAll} accessibilityRole="button" accessibilityLabel={global.i18n.t('play_all')}>
+        <Icon color={theme['c-button-font']} name="play" size={16} />
+      </TouchableOpacity>
       <TouchableOpacity style={styles.currentListBtns} onPress={onShowSearchBar} accessibilityRole="button" accessibilityLabel={global.i18n.t('nav_search')}>
         <Icon color={theme['c-button-font']} name="search-2" />
       </TouchableOpacity>
@@ -104,6 +115,9 @@ const DrawerActiveList = forwardRef<ActiveListType, ActiveListProps>(({ onShowSe
       <Icon style={styles.currentListIcon} color={theme['c-button-font']} name="chevron-right" size={12} />
       { fetching ? <Loading color={theme['c-button-font']} style={styles.loading} /> : null }
       <Text style={styles.currentListText} numberOfLines={1} color={theme['c-button-font']}>{currentListName}</Text>
+      <TouchableOpacity style={styles.currentListBtns} onPress={handlePlayAll} accessibilityRole="button" accessibilityLabel={global.i18n.t('play_all')}>
+        <Icon color={theme['c-button-font']} name="play" size={16} />
+      </TouchableOpacity>
       <TouchableOpacity style={styles.currentListBtns} onPress={onShowSearchBar}>
         <Icon color={theme['c-button-font']} name="search-2" />
       </TouchableOpacity>
