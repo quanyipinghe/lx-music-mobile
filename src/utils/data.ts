@@ -1,6 +1,7 @@
 import { getData, saveData, getAllKeys, removeDataMultiple, saveDataMultiple, removeData, getDataMultiple } from '@/plugins/storage'
 import { DEFAULT_SETTING, LIST_IDS, storageDataPrefix, type NAV_ID_Type } from '@/config/constant'
 import { throttle } from './common'
+import { MAX_USER_API_COUNT, type UserApiBackupItem } from './userApiBackup'
 // import { gzip, ungzip } from '@/utils/nativeModules/gzip'
 // import { readFile, writeFile, temporaryDirectoryPath, unlink } from '@/utils/fs'
 // import { isNotificationsEnabled, openNotificationPermissionActivity, shareText } from '@/utils/nativeModules/utils'
@@ -543,11 +544,14 @@ const matchInfo = (scriptInfo: string) => {
 
   return infos as Record<keyof typeof INFO_NAMES, string>
 }
-export const addUserApi = async(script: string): Promise<LX.UserApi.UserApiInfo> => {
+export const parseUserApiScript = (script: string) => {
   const result = /^\/\*[\S|\s]+?\*\//.exec(script)
   if (!result) throw new Error(global.i18n.t('user_api_add_failed_tip'))
-
-  let scriptInfo = matchInfo(result[0])
+  return matchInfo(result[0])
+}
+export const addUserApi = async(script: string): Promise<LX.UserApi.UserApiInfo> => {
+  if (userApis.length >= MAX_USER_API_COUNT) throw new Error(global.i18n.t('user_api_max_tip'))
+  let scriptInfo = parseUserApiScript(script)
 
   scriptInfo.name ||= `user_api_${new Date().toLocaleString()}`
   const apiInfo: LX.UserApi.UserApiInfo = {
@@ -561,6 +565,20 @@ export const addUserApi = async(script: string): Promise<LX.UserApi.UserApiInfo>
     [`${userApiPrefix}${apiInfo.id}`, script],
   ])
   return apiInfo
+}
+export const overwriteUserApis = async(items: UserApiBackupItem[]) => {
+  if (items.length > MAX_USER_API_COUNT) throw new Error(global.i18n.t('user_api_max_tip'))
+  const nextUserApis = items.map(({ id, script, allowShowUpdateAlert }) => {
+    const info = parseUserApiScript(script)
+    info.name ||= `user_api_${new Date().toLocaleString()}`
+    return { id, ...info, allowShowUpdateAlert }
+  })
+  await saveDataMultiple([
+    [userApiPrefix, nextUserApis],
+    ...items.map(({ id, script }) => [`${userApiPrefix}${id}`, script] as [string, string]),
+  ])
+  userApis = nextUserApis
+  return [...userApis]
 }
 export const removeUserApi = async(ids: string[]) => {
   if (!userApis) return []

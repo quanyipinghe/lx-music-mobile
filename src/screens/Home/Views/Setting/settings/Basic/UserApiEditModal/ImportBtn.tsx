@@ -9,6 +9,7 @@ import { state } from '@/store/userApi'
 import { tipDialog } from '@/utils/tools'
 
 import { useTheme } from '@/store/theme/hook'
+import { MAX_USER_API_COUNT } from '@/utils/userApiBackup'
 
 interface BtnProps {
   btnStyle?: _DorpDownMenuProps<any[]>['btnStyle']
@@ -30,7 +31,7 @@ export default ({ btnStyle, onImportAction }: BtnProps) => {
   type DorpDownMenuProps = _DorpDownMenuProps<typeof importTypes>
 
   const handleImportAction = (action: 'local' | 'online') => {
-    if (state.list.length > 20) {
+    if (state.list.length >= MAX_USER_API_COUNT) {
       void tipDialog({
         message: t('user_api_max_tip'),
         btnText: t('ok'),

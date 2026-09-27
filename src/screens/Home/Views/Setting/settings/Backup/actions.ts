@@ -7,6 +7,7 @@ import listState from '@/store/list/state'
 import { temporaryDirectoryPath, unlink } from '@/utils/fs'
 import { Platform } from 'react-native'
 import { shareFile } from '@/utils/nativeModules/utils'
+import { getUserApiBackup, restoreUserApiBackup, validateUserApiBackup } from '@/core/userApi'
 
 
 const getAllLists = async() => {
@@ -218,5 +219,42 @@ export const handleExportList = (path?: string) => {
   }).catch((err: any) => {
     log.error(err.message)
     toast(global.i18n.t('setting_backup_part_export_list_tip_failed') + ': ' + (err.message as string))
+  })
+}
+
+export const handleImportUserApiBackup = (path: string) => {
+  void (async() => {
+    const data = await handleReadFile(path)
+    validateUserApiBackup(data)
+    const confirmed = await confirmDialog({
+      message: global.i18n.t('setting_backup_user_api_import_confirm'),
+      cancelButtonText: global.i18n.t('dialog_cancel'),
+      confirmButtonText: global.i18n.t('confirm_button_text'),
+      bgClose: false,
+    })
+    if (!confirmed) return
+    await restoreUserApiBackup(data)
+    toast(global.i18n.t('setting_backup_user_api_import_success'))
+  })().catch((err: any) => {
+    log.error(err.stack)
+    toast(global.i18n.t('setting_backup_user_api_import_failed', { message: err.message }), 'long')
+  })
+}
+
+export const handleExportUserApiBackup = (path?: string) => {
+  const exportPath = Platform.OS == 'ios' ? temporaryDirectoryPath : path
+  if (!exportPath) return
+  const filePath = `${exportPath}/lx_user_api.bin`
+  void getUserApiBackup().then(async data => {
+    await handleSaveFile(filePath, data)
+    if (Platform.OS == 'ios') {
+      await shareFile(global.i18n.t('setting_backup_user_api'), filePath).finally(() => {
+        void unlink(filePath)
+      })
+    }
+    toast(global.i18n.t('setting_backup_user_api_export_success'))
+  }).catch((err: any) => {
+    log.error(err.stack)
+    toast(global.i18n.t('setting_backup_user_api_export_failed', { message: err.message }), 'long')
   })
 }
