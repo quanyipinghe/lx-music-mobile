@@ -1,15 +1,18 @@
-import { useRef } from 'react'
-import { TouchableOpacity } from 'react-native'
+import { useEffect, useRef, useState } from 'react'
+import { Text, TouchableOpacity } from 'react-native'
 import { Icon } from '@/components/common/Icon'
-import { useIsPlay } from '@/store/player/hook'
+import { useIsPlay, usePlayMusicInfo } from '@/store/player/hook'
 import { useTheme } from '@/store/theme/hook'
-import { playNext, playPrev, togglePlay } from '@/core/player/player'
-import { createStyle } from '@/utils/tools'
+import { collectMusic, playNext, playPrev, togglePlay, uncollectMusic } from '@/core/player/player'
+import { getListMusics } from '@/core/list'
+import { LIST_IDS } from '@/config/constant'
+import { createStyle, toast } from '@/utils/tools'
 import { useHorizontalMode } from '@/utils/hooks'
 import { markTimeoutExitInteraction } from '@/core/player/timeoutExit'
 import PlayListModal, { type PlayListModalType } from '@/components/player/PlayListModal'
 
 const BTN_SIZE = 24
+const LOVED_COLOR = '#f2475a'
 const handlePlayPrev = () => {
   markTimeoutExitInteraction()
   void playPrev()
@@ -53,6 +56,59 @@ const TogglePlayBtn = () => {
   )
 }
 
+// 当前歌曲是否在「我的收藏」里;下载列表的歌要取 metadata 里的原始歌曲,和 collectMusic 保持一致
+const useIsLoved = () => {
+  const { musicInfo } = usePlayMusicInfo()
+  const id = musicInfo ? ('progress' in musicInfo ? musicInfo.metadata.musicInfo.id : musicInfo.id) : null
+  const [loved, setLoved] = useState(false)
+  useEffect(() => {
+    if (!id) {
+      setLoved(false)
+      return
+    }
+    const update = () => { void getListMusics(LIST_IDS.LOVE).then(list => { setLoved(list.some(m => m.id == id)) }) }
+    const handleChange = (ids: string[]) => { if (ids.includes(LIST_IDS.LOVE)) update() }
+    update()
+    global.app_event.on('myListMusicUpdate', handleChange)
+    return () => { global.app_event.off('myListMusicUpdate', handleChange) }
+  }, [id])
+  return { loved, hasMusic: !!id }
+}
+
+const LoveBtn = () => {
+  const theme = useTheme()
+  const { loved, hasMusic } = useIsLoved()
+  if (!hasMusic) return null
+
+  const handlePress = () => {
+    if (loved) {
+      uncollectMusic()
+      toast(global.i18n.t('collect_music_removed'))
+    } else {
+      collectMusic()
+      toast(global.i18n.t('collect_music_added'))
+    }
+  }
+
+  return (
+    <TouchableOpacity
+      style={styles.cotrolBtn}
+      activeOpacity={0.5}
+      onPress={handlePress}
+      accessibilityRole="button"
+      accessibilityLabel={global.i18n.t(loved ? 'collected' : 'collect')}
+      accessibilityState={{ selected: loved }}
+    >
+      {
+        // 图标字体只有空心心形,实心用系统字体的 ♥,加 U+FE0E 强制文字样式,避免 iOS 显示成彩色 emoji
+        loved
+          ? <Text style={styles.lovedIcon}>{'\u2665\uFE0E'}</Text>
+          : <Icon name="love" color={theme['c-font-label']} size={20} />
+      }
+    </TouchableOpacity>
+  )
+}
+
 const PlayListBtn = () => {
   const theme = useTheme()
   const playListModalRef = useRef<PlayListModalType>(null)
@@ -90,6 +146,7 @@ export default () => {
     */}
       {/* {btnPrev} */}
       {/* 竖屏下靠左右滑动播放栏切歌,只在横屏保留上一首/下一首按钮 */}
+      <LoveBtn />
       { isHorizontalMode ? <PlayPrevBtn /> : null }
       <TogglePlayBtn />
       { isHorizontalMode ? <PlayNextBtn /> : null }
@@ -107,5 +164,10 @@ const styles = createStyle({
     alignItems: 'center',
 
     // backgroundColor: '#ccc',
+  },
+  lovedIcon: {
+    color: LOVED_COLOR,
+    fontSize: 25,
+    lineHeight: 28,
   },
 })

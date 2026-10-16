@@ -17,6 +17,8 @@
   "collect_songlist": "Collect",
   "collected": "Collected",
   "collect_success": "Successfully collected",
+  "collect_music_added": "Added to My Favorites",
+  "collect_music_removed": "Removed from My Favorites",
   "collect_toplist": "Collect Top playlist",
   "comment_btn_label": "Comments",
   "comment_hide_text": "Fold",
