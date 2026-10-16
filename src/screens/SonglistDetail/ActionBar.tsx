@@ -17,8 +17,7 @@ export default memo(() => {
   const info = useListInfo()
   const myList = useMyList()
 
-  const listId = `${info.source}__${info.id}`
-  const isCollected = myList.some(l => l.sourceListId == listId)
+  const isCollected = myList.some(l => l.source == info.source && l.sourceListId == info.id)
 
   const handlePlayAll = () => {
     if (!songlistState.listDetailInfo.info.name) return
@@ -37,7 +36,12 @@ export default memo(() => {
         onPress={handleCollection}
         activeOpacity={0.7}
       >
-        <Icon name="love" size={16} color={isCollected ? theme['c-primary'] : theme['c-font']} style={styles.btnIcon} />
+        {
+          // 图标字体只有空心心形,实心用系统字体的 ♥,加 U+FE0E 避免 iOS 显示成彩色 emoji
+          isCollected
+            ? <Text style={[styles.btnIcon, styles.lovedIcon]} color={theme['c-primary']}>{'\u2665\uFE0E'}</Text>
+            : <Icon name="love" size={16} color={theme['c-font']} style={styles.btnIcon} />
+        }
         <Text style={styles.btnText} color={isCollected ? theme['c-primary'] : theme['c-font']}>
           {isCollected ? t('collected') : t('collect_songlist')}
         </Text>
@@ -80,5 +84,9 @@ const styles = createStyle({
   },
   btnIcon: {
     marginRight: 8,
+  },
+  lovedIcon: {
+    fontSize: 19,
+    lineHeight: 22,
   },
 })
