@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 
 import listState from '@/store/list/state'
 import ListMenu, { type ListMenuType, type Position, type SelectInfo } from './ListMenu'
@@ -15,9 +15,22 @@ import ListMusicSearch, { type ListMusicSearchType } from './ListMusicSearch'
 import MusicPositionModal, { type MusicPositionModalType } from './MusicPositionModal'
 import MetadataEditModal, { type MetadataEditType, type MetadataEditProps } from '@/components/MetadataEditModal'
 import MusicToggleModal, { type MusicToggleModalType } from './MusicToggleModal'
+import DetailHeader from './DetailHeader'
+import FloatBackBtn from '@/components/FloatBackBtn'
+import { useStatusbarHeight } from '@/store/common/hook'
+import { useTheme } from '@/store/theme/hook'
+
+// iOS 列表详情页里,多选栏/搜索栏浮在页面顶部的这条区域
+const DETAIL_BAR_HEIGHT = 44
 
 
-export default () => {
+// 详情页模式(iOS):顶栏换成列表头里的大封面,多选/搜索栏改为浮在顶部
+// componentId: 详情页的页面 id,传了就是详情页模式
+export default ({ componentId }: { componentId?: string }) => {
+  const detail = !!componentId
+  const statusBarHeight = useStatusbarHeight()
+  const theme = useTheme()
+  const [barActive, setBarActive] = useState(false)
   // const t = useI18n()
   const activeListRef = useRef<ActiveListType>(null)
   const listMusicSearchRef = useRef<ListMusicSearchType>(null)
@@ -41,6 +54,7 @@ export default () => {
       multipleModeBarRef.current?.setVisibleBar(false)
     } else activeListRef.current?.setVisibleBar(false)
     isShowMultipleModeBar.current = true
+    setBarActive(true)
     multipleModeBarRef.current?.show()
     listRef.current?.setIsMultiSelectMode(true)
   }, [])
@@ -52,6 +66,7 @@ export default () => {
     multipleModeBarRef.current?.exitSelectMode()
     listRef.current?.setIsMultiSelectMode(false)
     isShowMultipleModeBar.current = false
+    setBarActive(isShowSearchBarModeBar.current)
   }, [])
   const hancelSwitchSelectMode = useCallback((mode: SelectMode) => {
     multipleModeBarRef.current?.setSwitchMode(mode)
@@ -72,6 +87,7 @@ export default () => {
   }, [])
   const handleShowSearch = useCallback(() => {
     isShowSearchBarModeBar.current = true
+    setBarActive(true)
     if (isShowMultipleModeBar.current) {
       multipleModeBarRef.current?.setVisibleBar(false)
     } else activeListRef.current?.setVisibleBar(false)
@@ -79,6 +95,7 @@ export default () => {
   }, [])
   const handleExitSearch = useCallback(() => {
     isShowSearchBarModeBar.current = false
+    setBarActive(isShowMultipleModeBar.current)
     listMusicSearchRef.current?.hide()
     listSearchBarRef.current?.hide()
     // console.log('handleExitSearch', isShowMultipleModeBar.current)
@@ -119,34 +136,71 @@ export default () => {
   }, [])
 
 
+  // 列表头只建一次,避免 FlatList 每次渲染都重新挂载头部
+  const header = useMemo(() => detail ? <DetailHeader onShowSearchBar={handleShowSearch} /> : undefined, [detail, handleShowSearch])
+  const barTop = detail ? statusBarHeight : 0
+
+  const bars = (
+    <>
+      <MultipleModeBar
+        ref={multipleModeBarRef}
+        onSwitchMode={hancelSwitchSelectMode}
+        onSelectAll={isAll => listRef.current?.selectAll(isAll)}
+        onExitSelectMode={hancelExitSelect}
+      />
+      <ListSearchBar
+        ref={listSearchBarRef}
+        onSearch={keyword => listMusicSearchRef.current?.search(keyword, layoutHeightRef.current)}
+        onExitSearch={handleExitSearch}
+      />
+    </>
+  )
+  const listMusicSearch = (
+    <ListMusicSearch
+      ref={listMusicSearchRef}
+      onScrollToInfo={handleScrollToInfo}
+    />
+  )
+
   return (
     <View style={styles.container}>
-      <View style={{ zIndex: 2 }}>
-        <ActiveList ref={activeListRef} onShowSearchBar={handleShowSearch} onScrollToTop={hancelScrollToTop} />
-        <MultipleModeBar
-          ref={multipleModeBarRef}
-          onSwitchMode={hancelSwitchSelectMode}
-          onSelectAll={isAll => listRef.current?.selectAll(isAll)}
-          onExitSelectMode={hancelExitSelect}
-        />
-        <ListSearchBar
-          ref={listSearchBarRef}
-          onSearch={keyword => listMusicSearchRef.current?.search(keyword, layoutHeightRef.current)}
-          onExitSearch={handleExitSearch}
-        />
-      </View>
+      {
+        detail
+          ? null
+          : (
+              <View style={{ zIndex: 2 }}>
+                <ActiveList ref={activeListRef} onShowSearchBar={handleShowSearch} onScrollToTop={hancelScrollToTop} />
+                {bars}
+              </View>
+            )
+      }
       <View style={{ flex: 1 }} onLayout={onLayout}>
         <List
           ref={listRef}
           onShowMenu={showMenu}
           onMuiltSelectMode={hancelMultiSelect}
           onSelectAll={isAll => multipleModeBarRef.current?.setIsSelectAll(isAll)}
+          ListHeaderComponent={header}
         />
-        <ListMusicSearch
-          ref={listMusicSearchRef}
-          onScrollToInfo={handleScrollToInfo}
-        />
+        {
+          detail
+            ? <View pointerEvents="box-none" style={{ ...styles.detailSearch, top: barTop + DETAIL_BAR_HEIGHT }}>{listMusicSearch}</View>
+            : listMusicSearch
+        }
       </View>
+      {
+        detail
+          ? (
+              <View
+                pointerEvents={barActive ? 'auto' : 'none'}
+                style={{ ...styles.detailBar, paddingTop: barTop, height: barTop + DETAIL_BAR_HEIGHT, backgroundColor: barActive ? theme['c-content-background'] : 'transparent' }}
+              >
+                <View style={{ flex: 1 }}>{bars}</View>
+              </View>
+            )
+          : null
+      }
+      {detail && !barActive ? <FloatBackBtn componentId={componentId!} /> : null}
       <ListMusicAdd ref={listMusicAddRef} onAdded={hancelExitSelect} />
       <ListMusicMultiAdd ref={listMusicMultiAddRef} onAdded={hancelExitSelect} />
       <MusicPositionModal ref={musicPositionModalRef}
@@ -179,5 +233,18 @@ const styles = createStyle({
   container: {
     flex: 1,
     flexDirection: 'column',
+  },
+  detailBar: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    zIndex: 2,
+  },
+  detailSearch: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
 })

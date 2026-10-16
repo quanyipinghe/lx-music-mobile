@@ -11,10 +11,10 @@ import type { InitState as CommonState } from '@/store/common/state'
 
 const MAX_WIDTH = scaleSizeW(400)
 
+// iOS:卡片网格,歌曲列表在点进去的详情页(MylistDetail)里
 const IOSMylist = () => (
   <View style={{ flex: 1 }}>
-    <MyList tabs />
-    <MusicList />
+    <MyList grid />
   </View>
 )
 

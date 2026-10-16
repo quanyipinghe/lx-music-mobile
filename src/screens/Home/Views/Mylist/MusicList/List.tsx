@@ -22,6 +22,7 @@ export interface ListProps {
   onShowMenu: (musicInfo: LX.Music.MusicInfo, index: number, position: Position) => void
   onMuiltSelectMode: () => void
   onSelectAll: (isAll: boolean) => void
+  ListHeaderComponent?: React.ReactElement
 }
 export interface ListType {
   setIsMultiSelectMode: (isMultiSelectMode: boolean) => void
@@ -57,7 +58,7 @@ const LocateIcon = ({ color }: { color: string }) => (
   </View>
 )
 
-const List = forwardRef<ListType, ListProps>(({ onShowMenu, onMuiltSelectMode, onSelectAll }, ref) => {
+const List = forwardRef<ListType, ListProps>(({ onShowMenu, onMuiltSelectMode, onSelectAll, ListHeaderComponent }, ref) => {
   // const t = useI18n()
   const flatListRef = useRef<FlatList>(null)
   const [currentList, setList] = useState<LX.List.ListMusics>([])
@@ -70,6 +71,8 @@ const List = forwardRef<ListType, ListProps>(({ onShowMenu, onMuiltSelectMode, o
   const currentListIdRef = useRef('')
   const waitJumpListPositionRef = useRef(false)
   const rowInfo = useRef(getRowInfo())
+  // 有列表头时 getItemLayout 的偏移要加上头部高度,否则定位/滚动到指定歌曲会错位
+  const headerHeightRef = useRef(0)
   const isShowAlbumName = useSettingValue('list.isShowAlbumName')
   const isShowInterval = useSettingValue('list.isShowInterval')
   const theme = useTheme()
@@ -279,7 +282,7 @@ const List = forwardRef<ListType, ListProps>(({ onShowMenu, onMuiltSelectMode, o
   )
   const getkey: FlatListType['keyExtractor'] = item => item.id
   const getItemLayout: FlatListType['getItemLayout'] = (data, index) => {
-    return { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
+    return { length: ITEM_HEIGHT, offset: headerHeightRef.current + ITEM_HEIGHT * index, index }
   }
 
   return (
@@ -301,6 +304,7 @@ const List = forwardRef<ListType, ListProps>(({ onShowMenu, onMuiltSelectMode, o
       extraData={activeIndex}
       getItemLayout={getItemLayout}
       contentContainerStyle={activeIndex > -1 ? styles.listPadding : undefined}
+      ListHeaderComponent={ListHeaderComponent ? <View onLayout={e => { headerHeightRef.current = e.nativeEvent.layout.height }}>{ListHeaderComponent}</View> : undefined}
     />
     {
       activeIndex > -1 ? (
