@@ -89,9 +89,10 @@ export default () => {
       </TouchableOpacity>
     */}
       {/* {btnPrev} */}
+      {/* 竖屏下靠左右滑动播放栏切歌,只在横屏保留上一首/下一首按钮 */}
       { isHorizontalMode ? <PlayPrevBtn /> : null }
       <TogglePlayBtn />
-      <PlayNextBtn />
+      { isHorizontalMode ? <PlayNextBtn /> : null }
       <PlayListBtn />
     </>
   )

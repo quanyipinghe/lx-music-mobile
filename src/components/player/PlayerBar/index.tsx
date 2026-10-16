@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react'
-import { View } from 'react-native'
+import { Animated, View } from 'react-native'
 import { useKeyboard } from '@/utils/hooks'
 
 import Pic from './components/Pic'
@@ -9,6 +9,7 @@ import ControlBtn from './components/ControlBtn'
 import { createStyle } from '@/utils/tools'
 // import { useSettingValue } from '@/store/setting/hook'
 import { useTheme } from '@/store/theme/hook'
+import useSwipeSwitch from './useSwipeSwitch'
 import { useSettingValue } from '@/store/setting/hook'
 
 
@@ -17,22 +18,26 @@ export default memo(({ isHome = false }: { isHome?: boolean }) => {
   const { keyboardShown } = useKeyboard()
   const theme = useTheme()
   const autoHidePlayBar = useSettingValue('common.autoHidePlayBar')
+  const { panHandlers, translateX } = useSwipeSwitch()
 
   const playerComponent = useMemo(() => (
-    <View style={{ ...styles.container, backgroundColor: theme['c-content-background'] }}>
+    <View {...panHandlers} style={{ ...styles.container, backgroundColor: theme['c-content-background'] }}>
       <Pic isHome={isHome} />
+      {/* 外层裁剪、内层位移:滑动时歌名不会盖到封面和右侧按钮上 */}
       <View style={styles.center}>
-        <Title isHome={isHome} />
-        {/* <View style={{ ...styles.row, justifyContent: 'space-between' }}>
-          <PlayTime />
-        </View> */}
-        <PlayInfo isHome={isHome} />
+        <Animated.View style={{ flex: 1, transform: [{ translateX }] }}>
+          <Title isHome={isHome} />
+          {/* <View style={{ ...styles.row, justifyContent: 'space-between' }}>
+            <PlayTime />
+          </View> */}
+          <PlayInfo isHome={isHome} />
+        </Animated.View>
       </View>
       <View style={styles.right}>
         <ControlBtn />
       </View>
     </View>
-  ), [theme, isHome])
+  ), [theme, isHome, panHandlers, translateX])
 
   // console.log('render pb')
 
@@ -64,8 +69,9 @@ const styles = createStyle({
     flexDirection: 'column',
     flexGrow: 1,
     flexShrink: 1,
-    paddingLeft: 5,
+    marginLeft: 5,
     height: '100%',
+    overflow: 'hidden',
     // justifyContent: 'space-evenly',
     // height: 48,
     // backgroundColor: 'rgba(0, 0, 0, .1)',
