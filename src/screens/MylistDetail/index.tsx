@@ -13,7 +13,7 @@ export default ({ componentId }: { componentId: string }) => {
   }, [componentId])
 
   return (
-    <PageContent>
+    <PageContent fullScreen>
       <StatusBar />
       <MusicList componentId={componentId} />
       <PlayerBar />

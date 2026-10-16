@@ -11,16 +11,25 @@ import { useBgPic } from '@/store/common/hook'
 
 interface Props {
   children: React.ReactNode
+  // 内容画到状态栏下面(大封面头图用),iOS 只保留底部安全区
+  fullScreen?: boolean
 }
 
 const BLUR_RADIUS = Math.max(scaleSizeAbsHR(18), 10)
 
-const ContentContainer = ({ children }: Props) => {
-  if (Platform.OS == 'ios') return <SafeAreaView style={{ flex: 1 }}>{children}</SafeAreaView>
-  return <>{children}</>
+const ContentContainer = ({ children, fullScreen }: Props) => {
+  if (Platform.OS != 'ios') return <>{children}</>
+  if (!fullScreen) return <SafeAreaView style={{ flex: 1 }}>{children}</SafeAreaView>
+  // 放在底部的空 SafeAreaView 只会撑出底部安全区的高度
+  return (
+    <>
+      <View style={{ flex: 1 }}>{children}</View>
+      <SafeAreaView />
+    </>
+  )
 }
 
-export default ({ children }: Props) => {
+export default ({ children, fullScreen }: Props) => {
   const theme = useTheme()
   const windowSize = useWindowSize()
   const pic = useBgPic()
@@ -60,13 +69,13 @@ export default ({ children }: Props) => {
           },
         ]}
       />
-      <ContentContainer>
+      <ContentContainer fullScreen={fullScreen}>
         <View style={{ flex: 1, flexDirection: 'column' }}>
           {children}
         </View>
       </ContentContainer>
     </View>
-  ), [children, theme, windowSize.height, windowSize.width])
+  ), [children, fullScreen, theme, windowSize.height, windowSize.width])
   const picComponent = useMemo(() => {
     return (
       <View style={{ flex: 1, overflow: 'hidden' }}>
@@ -86,14 +95,14 @@ export default ({ children }: Props) => {
             },
           ]}
         />
-        <ContentContainer>
+        <ContentContainer fullScreen={fullScreen}>
           <View style={{ flex: 1, flexDirection: 'column' }}>
             {children}
           </View>
         </ContentContainer>
       </View>
     )
-  }, [children, pic, theme, windowSize.height, windowSize.width])
+  }, [children, fullScreen, pic, theme, windowSize.height, windowSize.width])
 
   return (
     <>

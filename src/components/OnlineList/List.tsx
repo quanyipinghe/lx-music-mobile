@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react'
-import { FlatList, type FlatListProps, RefreshControl, View } from 'react-native'
+import { FlatList, type FlatListProps, Platform, RefreshControl, View } from 'react-native'
 
 // import { useMusicList } from '@/store/list/hook'
 import ListItem, { ITEM_HEIGHT } from './ListItem'
@@ -233,6 +233,8 @@ const List = forwardRef<ListType, ListProps>(({
     <FlatList
       ref={flatListRef}
       style={styles.list}
+      // 详情页列表画到状态栏下面,iOS 会自动在顶部加安全区内边距,导致大封面进页面和回弹时都停在状态栏下方
+      contentInsetAdjustmentBehavior={Platform.OS == 'ios' ? 'never' : undefined}
       data={currentList}
       numColumns={rowInfo.current.rowNum}
       horizontal={false}

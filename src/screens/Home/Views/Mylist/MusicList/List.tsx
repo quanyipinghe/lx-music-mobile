@@ -1,6 +1,6 @@
 import { playList } from '@/core/player/player'
 import { useMemo, useRef, useState, useEffect, forwardRef, useImperativeHandle } from 'react'
-import { FlatList, TouchableOpacity, View, type NativeScrollEvent, type NativeSyntheticEvent, type FlatListProps } from 'react-native'
+import { FlatList, Platform, TouchableOpacity, View, type NativeScrollEvent, type NativeSyntheticEvent, type FlatListProps } from 'react-native'
 
 import listState from '@/store/list/state'
 import playerState from '@/store/player/state'
@@ -290,6 +290,8 @@ const List = forwardRef<ListType, ListProps>(({ onShowMenu, onMuiltSelectMode, o
     <FlatList
       ref={flatListRef}
       onScroll={handleScroll}
+      // 详情页列表画到状态栏下面,iOS 会自动在顶部加安全区内边距,导致大封面进页面和回弹时都停在状态栏下方
+      contentInsetAdjustmentBehavior={Platform.OS == 'ios' ? 'never' : undefined}
       style={styles.list}
       data={currentList}
       maxToRenderPerBatch={4}

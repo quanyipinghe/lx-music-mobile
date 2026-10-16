@@ -7,7 +7,7 @@ import List, { type ListType } from './List'
 import ListMusicAdd, { type MusicAddModalType as ListMusicAddType } from '@/components/MusicAddModal'
 import ListMusicMultiAdd, { type MusicMultiAddModalType as ListAddMultiType } from '@/components/MusicMultiAddModal'
 import { createStyle } from '@/utils/tools'
-import { type LayoutChangeEvent, View } from 'react-native'
+import { type LayoutChangeEvent, SafeAreaView, View } from 'react-native'
 import ActiveList, { type ActiveListType } from './ActiveList'
 import MultipleModeBar, { type SelectMode, type MultipleModeBarType } from './MultipleModeBar'
 import ListSearchBar, { type ListSearchBarType } from './ListSearchBar'
@@ -138,7 +138,6 @@ export default ({ componentId }: { componentId?: string }) => {
 
   // 列表头只建一次,避免 FlatList 每次渲染都重新挂载头部
   const header = useMemo(() => detail ? <DetailHeader onShowSearchBar={handleShowSearch} /> : undefined, [detail, handleShowSearch])
-  const barTop = detail ? statusBarHeight : 0
 
   const bars = (
     <>
@@ -182,21 +181,23 @@ export default ({ componentId }: { componentId?: string }) => {
           onSelectAll={isAll => multipleModeBarRef.current?.setIsSelectAll(isAll)}
           ListHeaderComponent={header}
         />
-        {
-          detail
-            ? <View pointerEvents="box-none" style={{ ...styles.detailSearch, top: barTop + DETAIL_BAR_HEIGHT }}>{listMusicSearch}</View>
-            : listMusicSearch
-        }
+        {detail ? null : listMusicSearch}
       </View>
       {
+        // 详情页内容画到状态栏下面,浮层用 SafeAreaView 自动让出状态栏/刘海(Android 上它就是普通 View,靠 statusBarHeight)
         detail
           ? (
-              <View
-                pointerEvents={barActive ? 'auto' : 'none'}
-                style={{ ...styles.detailBar, paddingTop: barTop, height: barTop + DETAIL_BAR_HEIGHT, backgroundColor: barActive ? theme['c-content-background'] : 'transparent' }}
-              >
-                <View style={{ flex: 1 }}>{bars}</View>
-              </View>
+              <>
+                <SafeAreaView pointerEvents="box-none" style={styles.detailSearch}>
+                  <View pointerEvents="box-none" style={{ flex: 1, marginTop: statusBarHeight + DETAIL_BAR_HEIGHT }}>{listMusicSearch}</View>
+                </SafeAreaView>
+                <SafeAreaView
+                  pointerEvents={barActive ? 'auto' : 'none'}
+                  style={{ ...styles.detailBar, backgroundColor: barActive ? theme['c-content-background'] : 'transparent' }}
+                >
+                  <View style={{ height: DETAIL_BAR_HEIGHT, marginTop: statusBarHeight }}>{bars}</View>
+                </SafeAreaView>
+              </>
             )
           : null
       }
@@ -245,6 +246,7 @@ const styles = createStyle({
     position: 'absolute',
     left: 0,
     right: 0,
+    top: 0,
     bottom: 0,
   },
 })

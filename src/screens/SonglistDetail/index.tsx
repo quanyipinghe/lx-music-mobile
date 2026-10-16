@@ -30,7 +30,7 @@ export default ({ componentId, info }: { componentId: string, info: ListInfoItem
   }, [])
 
   return (
-    <PageContent>
+    <PageContent fullScreen>
       <StatusBar />
       <View style={styles.content}>
         <ListInfoContext.Provider value={info}>
