@@ -7,6 +7,7 @@ import { scaleSizeW } from '@/utils/pixelRatio'
 import { NAV_SHEAR_NATIVE_IDS } from '@/config/constant'
 import { useTheme } from '@/store/theme/hook'
 import Image from '@/components/common/Image'
+import { Icon } from '@/components/common/Icon'
 
 const gap = scaleSizeW(15)
 export default memo(({ item, index, width, showSource, onPress }: {
@@ -24,17 +25,23 @@ export default memo(({ item, index, width, showSource, onPress }: {
   return (
     item.source
       ? (
-          <View style={{ ...styles.listItem, width: itemWidth }}>
+          <TouchableOpacity activeOpacity={0.7} onPress={handlePress} style={{ ...styles.listItem, width: itemWidth }}>
             <View style={{ ...styles.listItemImg, backgroundColor: theme['c-content-background'] }}>
-              <TouchableOpacity activeOpacity={0.7} onPress={handlePress}>
-                <Image url={item.img} nativeID={`${NAV_SHEAR_NATIVE_IDS.songlistDetail_pic}_from_${item.id}`} style={{ width: itemWidth, height: itemWidth, borderRadius: 10 }} />
-                { showSource ? <Text style={styles.sourceLabel} size={10} color="#fff">{item.source}</Text> : null }
-              </TouchableOpacity>
+              <Image url={item.img} nativeID={`${NAV_SHEAR_NATIVE_IDS.songlistDetail_pic}_from_${item.id}`} style={{ width: itemWidth, height: itemWidth, borderRadius: 10 }} />
+              { showSource ? <Text style={styles.sourceLabel} size={10} color="#fff">{item.source}</Text> : null }
+              {
+                item.play_count
+                  ? (
+                      <View style={styles.playCount}>
+                        <Icon name="play" size={9} color="#fff" />
+                        <Text style={styles.playCountText} size={11} color="#fff" numberOfLines={1}>{item.play_count}</Text>
+                      </View>
+                    )
+                  : null
+              }
             </View>
-            <TouchableOpacity activeOpacity={0.7} onPress={handlePress}>
-              <Text style={styles.listItemTitle} numberOfLines={2}>{item.name}</Text>
-            </TouchableOpacity>
-          </View>
+            <Text style={styles.listItemTitle} numberOfLines={2}>{item.name}</Text>
+          </TouchableOpacity>
         )
       : <View style={{ ...styles.listItem, width: itemWidth }} />
   )
@@ -74,9 +81,24 @@ const styles = createStyle({
     backgroundColor: 'rgba(0, 0, 0, 0.55)',
     fontWeight: '600',
   },
+  playCount: {
+    position: 'absolute',
+    right: 6,
+    bottom: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+  },
+  playCountText: {
+    marginLeft: 3,
+    fontWeight: '600',
+  },
   listItemTitle: {
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 14,
+    lineHeight: 19,
     fontWeight: '500',
     marginTop: 4,
     marginBottom: 4,

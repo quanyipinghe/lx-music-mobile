@@ -33,39 +33,23 @@ export default memo(() => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={[styles.playBtn, { backgroundColor: theme['c-primary-background-active'] }]}
-        onPress={handlePlayAll}
-        activeOpacity={0.7}
-      >
-        <Icon name="play" size={13} color={theme['c-primary']} style={styles.btnIcon} />
-        <Text style={styles.playBtnText} color={theme['c-primary']}>
-          {t('play_all')}
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={[
-          styles.collectBtn,
-          {
-            backgroundColor: isCollected ? theme['c-primary-background-active'] : theme['c-button-background'],
-            borderColor: isCollected ? theme['c-primary'] : 'transparent',
-          },
-        ]}
+        style={[styles.btn, { backgroundColor: isCollected ? theme['c-primary-background-active'] : theme['c-button-background'] }]}
         onPress={handleCollection}
         activeOpacity={0.7}
       >
-        <Icon
-          name="love"
-          size={14}
-          color={isCollected ? theme['c-primary'] : theme['c-font']}
-          style={styles.btnIcon}
-        />
-        <Text
-          style={[styles.collectBtnText, isCollected && styles.collectBtnTextActive]}
-          color={isCollected ? theme['c-primary'] : theme['c-font']}
-        >
+        <Icon name="love" size={16} color={isCollected ? theme['c-primary'] : theme['c-font']} style={styles.btnIcon} />
+        <Text style={styles.btnText} color={isCollected ? theme['c-primary'] : theme['c-font']}>
           {isCollected ? t('collected') : t('collect_songlist')}
         </Text>
+      </TouchableOpacity>
+      <View style={styles.space} />
+      <TouchableOpacity
+        style={[styles.btn, { backgroundColor: theme['c-button-background'] }]}
+        onPress={handlePlayAll}
+        activeOpacity={0.7}
+      >
+        <Icon name="play" size={15} color={theme['c-font']} style={styles.btnIcon} />
+        <Text style={styles.btnText} color={theme['c-font']}>{t('play_all')}</Text>
       </TouchableOpacity>
     </View>
   )
@@ -75,41 +59,26 @@ const styles = createStyle({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 14,
-    paddingTop: 10,
-    paddingBottom: 12,
-  },
-  playBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 36,
     paddingHorizontal: 18,
-    borderRadius: 18,
-    marginRight: 10,
+    paddingTop: 16,
+    paddingBottom: 14,
   },
-  playBtnText: {
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  collectBtn: {
+  btn: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 36,
-    paddingHorizontal: 15,
-    borderRadius: 18,
-    borderWidth: 1,
+    height: 44,
+    borderRadius: 22,
   },
-  collectBtnText: {
-    fontSize: 13,
+  space: {
+    width: 12,
   },
-  collectBtnTextActive: {
+  btnText: {
+    fontSize: 15,
     fontWeight: '600',
   },
   btnIcon: {
-    marginRight: 6,
+    marginRight: 8,
   },
 })
-
-
