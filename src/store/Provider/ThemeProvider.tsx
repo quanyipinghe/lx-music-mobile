@@ -1,4 +1,6 @@
 import { memo, useEffect, useState } from 'react'
+import { Platform } from 'react-native'
+import ToastHost from '@/components/common/ToastHost'
 
 import themeState, { ThemeContext } from '../theme/state'
 
@@ -23,6 +25,7 @@ export default memo(({ children }: {
   return (
     <ThemeContext.Provider value={theme}>
       {children}
+      {Platform.OS == 'ios' ? <ToastHost /> : null}
     </ThemeContext.Provider>
   )
 })

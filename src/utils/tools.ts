@@ -11,6 +11,7 @@ import { scaleSizeH, scaleSizeW, setSpText } from './pixelRatio'
 import { toOldMusicInfo } from './index'
 import { stringMd5 } from 'react-native-quick-md5'
 import { windowSizeTools } from '@/utils/windowSizeTools'
+import { showIOSToast } from '@/components/common/ToastHost'
 
 
 // https://stackoverflow.com/a/47349998
@@ -110,7 +111,7 @@ export const requestStoragePermission = async() => {
  */
 export const toast = (message: string, duration: 'long' | 'short' = 'short', position: 'top' | 'center' | 'bottom' = 'bottom') => {
   if (!isAndroid) {
-    console.log(`[toast:${duration}:${position}] ${message}`)
+    showIOSToast(message, duration == 'long' ? 3500 : 2000, position)
     return
   }
   let _duration
